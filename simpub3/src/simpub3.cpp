@@ -27,7 +27,7 @@ double target_angle; //new mast angle
 double target_pos;   //new mast position
 double prev_angle=0;
 double prev_pos=100;
-
+/*
 void mast_Callback (const double& w1)
 {
 	target_angle=0;
@@ -106,13 +106,13 @@ void mast_Callback (const double& w1)
 	}
 	current_mast_position = target_pos;
 	current_mast_angle = target_angle; 
-	printf("lololololololo\n");
+	printf("**********\n");
 	printf("%f\n",target_pos);
 	printf("%f\n",target_angle);
-	printf("lololololololo\n");
+	printf("**********\n");
 	
 }
-
+*/
 void chatterCallback(const geometry_msgs::Vector3::ConstPtr& msg)
 {
 	x=msg->x;
@@ -122,7 +122,6 @@ void chatterCallback(const geometry_msgs::Vector3::ConstPtr& msg)
     w2=(atan2(z,x)* 180 / PI);
     printf("\n*****\nComputed w2 = %f\n",w2);
     printf("Computed w1 = %f\n*****\n",w1);
-    //mast_Callback(w1);
 }
 
 
@@ -188,28 +187,21 @@ int main(int argc, char* argv[])
 
 	ros::Rate loop_rate(1000);
 	ros::Subscriber cords_sub = nh.subscribe("head_cords", 1, chatterCallback);
-	//ros::Subscriber curr_tilt = nh.subscribe("cur_tilt_angle",1,tiltCallback);
-	//ros::Subscriber curr_srv_pos = nh.subscribe("mast_position",100,servCallback);
-
+	ros::Subscriber curr_tilt = nh.subscribe("cur_tilt_angle",1,tiltCallback);
 
 	ros::Publisher servo_pos = nh.advertise<std_msgs::Float64>("mast_float", 1);
 	printf( "Advertising Mast\n");
-	//ros::Publisher cmr_pos   = nh.advertise<std_msgs::Float64>("tilt_angle",1);
-	//printf( "Advertising Tilt Angle\n");
+	ros::Publisher cmr_pos   = nh.advertise<std_msgs::Float64>("tilt_angle",1);
+	printf( "Advertising Tilt Angle\n");
 
-	 
-
-
-	  
-	while (ros::ok())
+	 while (ros::ok())
 	{
 		ros::Duration(1).sleep();
 		ros::spinOnce();
 		printf("*****\n");
 		printf("SPINNED\n");
 		printf("*****\n");
-				
-		/*
+			
 		if (abs(target_tilt_angle)<=30)
 		{	
 			printf("**********\n");
@@ -228,77 +220,7 @@ int main(int argc, char* argv[])
 		{
 			printf("Skipping Loop\n");
 		}
-		*/
-        /*
-		//current_mast_position=msg->data;
-		target_angle=0;
-
-		//Find current mast angle
-		if (current_mast_position >=98)
-		{
-			current_mast_angle = (5.625*(current_mast_position-98));
-		}
-		else
-		{
-			current_mast_angle = (5.29411764705882352941*(current_mast_position-98));
-		}
-		printf("******\n");
-		printf("Current Mast Position : %f\n",current_mast_position);
-		printf("Current Mast Angle : %f\n",current_mast_angle);
-
-		/*
-		//Find absolute angle for mast
-		target_angle= current_mast_angle+w1 ;
-		if (target_angle>90)
-		{
-			target_angle=90;
-			target_pos=115;
-		}
-		else if (target_angle<-90)
-		{
-			target_angle=-90;
-			target_pos=82;
-		}
-		//Translate angle into mast position
-		else if (target_angle>0)
-		{
-			target_pos=98+target_angle*0.222222222;
-		}
-		else target_pos=98+target_angle*1.8888888889;
-
-
-		if ((abs(target_pos-current_mast_position)>2)&&(target_pos<115)&&(target_pos>80))
-		{
-			if (target_pos>current_mast_position)
-			{
-				target_pos=current_mast_position+2;
-			}
-			else
-			{
-				target_pos=current_mast_position-2;
-			}
-			if (target_pos >=98)
-			{
-				target_angle = (5.625*(target_pos-98));
-			}
-			else
-			{
-				target_angle = (5.29411764705882352941*(target_pos-98));
-			}
-		}
-		else if (target_pos>115)
-		{
-				target_pos = 115;
-				target_angle = 90;
-		}
-		else if (target_pos<80)
-		{
-			target_pos = 80;
-			target_angle = -90;
-		}
-
-		current_mast_position = target_pos;
-		current_mast_angle = target_angle; */
+	
 		target_angle=0;
 		//Find current mast angle
 		if (current_mast_position >=98)
@@ -333,15 +255,7 @@ int main(int argc, char* argv[])
 		}
 		else target_pos=98+target_angle*1.8888888889;
 
-		//if(abs(current_mast_position-prev_pos)<2)
-		//{
-		//	target_pos=prev_pos;
-		//	target_angle=prev_angle;
-		//	prev_pos=current_mast_position;
-		//	prev_angle=current_mast_angle;
-		//}
-		//else
-		//{
+
 			if ((abs(target_pos-current_mast_position)>2)&&(target_pos<115)&&(target_pos>80))
 			{
 				if (target_pos>current_mast_position)
@@ -372,7 +286,7 @@ int main(int argc, char* argv[])
 				target_pos = 80;
 				target_angle = -90;
 			}
-		//}
+		
 		
 		printf("Target Mast Angle : %f\n",target_angle);
 		printf("Target Mast Position : %f\n",target_pos);
