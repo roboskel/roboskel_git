@@ -197,8 +197,8 @@ int main(int argc, char *argv[])
 		cout<<"Error connecting to device: "<<status<<"."<<endl;
 		return 1;
 	}
-	device.SetConfig(_RWD, 1, 0);
-	device.SetConfig(_RWD, 2, 0);
+	device.SetConfig(_RWD, 1, 500);
+	device.SetConfig(_RWD, 2, 500);
 	ros::init(argc, argv, "sdc2130_skel");
 
 	ros::NodeHandle n;
