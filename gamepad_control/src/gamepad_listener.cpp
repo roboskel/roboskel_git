@@ -30,8 +30,16 @@ void chatterCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 		gp_funcs[i]=msg->data[i];
 		i++;
 	}
-	//ros::Duration(0.5).sleep();
 	/*
+	//ros::Duration(0.5).sleep();
+	if (gp_funcs[0]==-0.000000)
+	{
+		gp_funcs[0]=0;
+	}
+	if (gp_funcs[1]==-0.000000)
+	{
+		gp_funcs[1]=0;
+	}
 	////////////
 	//LEFT MOTOR
 	////////////
@@ -104,12 +112,15 @@ void chatterCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 	}
 	*/
 	/*
+	printf("*************\n");
 	printf("gp_rm %f\n",gp_funcs[1]);
 	printf("perc_rm %f \n",new_perc_RM);
 	printf("gp_lm %f\n",gp_funcs[0]);
 	printf("perc_lm %f\n",new_perc_LM);
-	ros::Duration(0.5).sleep();
+	printf("*************\n");
 	*/
+	//ros::Duration(0.5).sleep();
+
 	
 
 }
