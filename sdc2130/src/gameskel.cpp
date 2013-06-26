@@ -73,7 +73,8 @@ void teleopCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 	///////////////////////////////////////////
 	else if (functions[3]==1)
 	{	
-		printf("Temporary Immobilization Protocol Engaged. Stand By.");
+		//ROS_INFO("Temporary Immobilization Protocol Engaged. Stand By.\n");
+		printf("Temporary Immobilization Protocol Engaged. Stand By.\n");
 		//printf("first IF\n");
 		if((status = device.SetCommand(_GO, 2,  0) != RQ_SUCCESS))
 		{
@@ -108,7 +109,8 @@ void teleopCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 		if(HB==0)
 		{
 			HB=1;
-			printf("Handbrake Engaged. Press Again to Resume Normal Function");
+			//ROS_INFO("Handbrake Engaged. Press Again to Resume Normal Function\n");
+			printf("Handbrake Engaged. Press Again to Resume Normal Function\n");
 			//printf("first IF\n");
 			if((status = device.SetCommand(_GO, 2,  0) != RQ_SUCCESS))
 			{
@@ -171,7 +173,7 @@ void teleopCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 			{
 				//cout<<"succeeded.\n"<<endl;
 			}
-			ros::Duration(0.01).sleep(); 
+			//ros::Duration(0.01).sleep(); 
 			//printf("Second IF\n");
 			if((status = device.SetCommand(_GO, 1,- RM)) != RQ_SUCCESS)
 			{
@@ -183,7 +185,7 @@ void teleopCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 			{
 				//cout<<"succeeded.\n"<<endl;
 			}
-			ros::Duration(0.01).sleep();
+			//ros::Duration(0.01).sleep();
 		}
 	}     
 }
@@ -197,8 +199,8 @@ int main(int argc, char *argv[])
 		cout<<"Error connecting to device: "<<status<<"."<<endl;
 		return 1;
 	}
-	device.SetConfig(_RWD, 1, 500);
-	device.SetConfig(_RWD, 2, 500);
+	device.SetConfig(_RWD, 1, 0);
+	device.SetConfig(_RWD, 2, 0);
 	ros::init(argc, argv, "sdc2130_skel");
 
 	ros::NodeHandle n;
@@ -220,7 +222,7 @@ int main(int argc, char *argv[])
     else
       cout<<"returned --> "<<result<<endl;
     ROS_INFO("Roboteq -- Successfull setup of the Roboteq SDC2130");
-    printf ("Sek Operational");
+    printf ("Sek Operational\n");
     ros::Duration(0.01).sleep(); //sleep for 10 ms
 
 while (ros::ok())
