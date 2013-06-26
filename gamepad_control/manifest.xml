@@ -1,0 +1,18 @@
+<package>
+  <description brief="gamepad_control">
+
+     gamepad_control
+
+  </description>
+  <author>SKEL Lab</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/gamepad_control</url>
+  <depend package="std_msgs"/>
+  <depend package="joy"/>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+
+</package>
+
+

@@ -1,0 +1,18 @@
+<package>
+  <description brief="cord_pub">
+
+     cord_pub
+
+  </description>
+  <author>SKEL Lab</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/cord_pub</url>
+  <depend package="std_msgs"/>
+  <depend package="tf"/>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+
+</package>
+
+

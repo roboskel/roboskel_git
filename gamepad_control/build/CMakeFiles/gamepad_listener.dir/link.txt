@@ -1,0 +1,1 @@
+/usr/bin/c++   -O2 -g     -pthread CMakeFiles/gamepad_listener.dir/src/gamepad_listener.o  -o ../bin/gamepad_listener -rdynamic -L/opt/ros/fuerte/lib -lrosbag -ltopic_tools -lroscpp -lrostime -lrosconsole -lroscpp_serialization -lxmlrpcpp -Wl,-rpath,/opt/ros/fuerte/lib 

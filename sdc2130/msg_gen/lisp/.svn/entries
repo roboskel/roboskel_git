@@ -1,0 +1,56 @@
+10
+
+dir
+0
+https://subversion.assembla.com/svn/roboskel/robot_skel/sdc2130_skel/msg_gen/lisp
+https://subversion.assembla.com/svn/roboskel
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+35c660a6-76ad-462a-aa12-e168a95b4e13
+
+_package.lisp
+file
+
+
+
+add
+
+_package_teleop_skel.lisp
+file
+
+
+
+add
+
+sdc2130_skel-msg.asd
+file
+
+
+
+add
+
+teleop_skel.lisp
+file
+
+
+
+add
+

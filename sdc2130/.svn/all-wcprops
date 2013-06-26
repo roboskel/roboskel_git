@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/roboskel/!svn/ver/24/robot_skel/sdc2130_skel
+END
+.cproject
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/roboskel/!svn/ver/18/robot_skel/sdc2130_skel/.cproject
+END
+mainpage.dox
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/roboskel/!svn/ver/12/robot_skel/sdc2130_skel/mainpage.dox
+END
+.pydevproject
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/roboskel/!svn/ver/18/robot_skel/sdc2130_skel/.pydevproject
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/roboskel/!svn/ver/24/robot_skel/sdc2130_skel/CMakeLists.txt
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/roboskel/!svn/ver/12/robot_skel/sdc2130_skel/Makefile
+END
+.project
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/roboskel/!svn/ver/18/robot_skel/sdc2130_skel/.project
+END
+cmake_install.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/roboskel/!svn/ver/18/robot_skel/sdc2130_skel/cmake_install.cmake
+END
+manifest.xml
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/roboskel/!svn/ver/12/robot_skel/sdc2130_skel/manifest.xml
+END

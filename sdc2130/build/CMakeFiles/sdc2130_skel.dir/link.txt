@@ -1,0 +1,1 @@
+/usr/bin/c++   -O2 -g     -pthread CMakeFiles/sdc2130_skel.dir/src/main.o CMakeFiles/sdc2130_skel.dir/src/RoboteqDevice.o  -o ../bin/sdc2130_skel -rdynamic -L/opt/ros/fuerte/lib -lroscpp -lrostime -lrosconsole -lroscpp_serialization -lxmlrpcpp -lboost_thread -lboost_system -lboost_date_time -Wl,-rpath,/opt/ros/fuerte/lib 

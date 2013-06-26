@@ -1,0 +1,1 @@
+/usr/bin/c++   -O2 -g    -pthread -lncurses CMakeFiles/gpsim.dir/src/gpsim.o  -o ../bin/gpsim -rdynamic -L/opt/ros/fuerte/lib -lrosbag -ltopic_tools -lroscpp -lrostime -lrosconsole -lroscpp_serialization -lxmlrpcpp -Wl,-rpath,/opt/ros/fuerte/lib 
