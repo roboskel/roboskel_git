@@ -35,7 +35,7 @@ void chatterCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 	////////////
 	//LEFT MOTOR
 	////////////
-	if (abs(gp_funcs[1]-prev_perc_LM)<0.025)
+	if (abs(gp_funcs[0]-prev_perc_LM)<0.025)
 	{
 		new_perc_LM = prev_perc_LM;
 		prev_perc_LM = gp_funcs[0];
@@ -70,7 +70,7 @@ void chatterCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 	//////////////
 	//RIGHT MOTOR
 	//////////////
-	if (abs(gp_funcs[0]-prev_perc_RM)<0.025)
+	if (abs(gp_funcs[1]-prev_perc_RM)<0.025)
 	{
 		new_perc_RM = prev_perc_RM;
 		prev_perc_RM = gp_funcs[1];
