@@ -21,12 +21,8 @@ roboskel_git
   To run :  
   -	roscore 
   - roslaunch openni_launch openni.launch  
-  -	rosrun servo_mast servo_mast  
-  -	rosrun kinect_aux kinect_aux_node  
-  -	rosrun openni_tracker openni_tracker  
-  -	rosrun cord_pub cord_pub  
-  -	rosrun simpub3
-   
+  -	roslaunch simpub3 head_tracker.launch
+  
 3) gamepad_control 
 
   Description : Receives input from a gamepad/joystick and translates it to a message that will be used by two SDC2130 
