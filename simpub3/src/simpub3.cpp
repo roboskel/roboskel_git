@@ -214,7 +214,7 @@ int main(int argc, char* argv[])
 			std_msgs::Float64 tilt_angle;
 			tilt_angle.data=target_tilt_angle;
 			cmr_pos.publish(tilt_angle);
-			ros::Duration(3).sleep();
+			ros::Duration(0.5).sleep();
 		}
 		else
 		{
@@ -295,7 +295,7 @@ int main(int argc, char* argv[])
 		std_msgs::Float64 serv_pos_msg;
 		serv_pos_msg.data = target_pos;
 		servo_pos.publish(serv_pos_msg);
-		ros::Duration(3).sleep();
+		ros::Duration(0.5).sleep();
 
 	}
 
