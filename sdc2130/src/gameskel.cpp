@@ -204,7 +204,19 @@ void teleopCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 		else
 		{
 		if(HB==0)
-		{
+		{	
+			
+			LM=functions[0]*400;
+			RM=functions[1]*400;
+			if (LM>0)
+				LM=(int)(LM+0.5);
+			else
+				LM=(int)(LM-0.5);
+			if (RM>0)
+				RM=(int)(RM+0.5);
+			else
+				RM=(int)(RM-0.5);
+			/*
 			if (functions[0] >= 0)
 				LM = (int) (functions[0] + 0.5); 
 			else 
@@ -213,9 +225,8 @@ void teleopCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 				RM = (int) (functions[1] + 0.5); 
 			else 
 				RM = (int) (functions[1] - 0.5);
-		
-			LM=LM*200;
-			RM=RM*200; 
+			*/
+			 
 			   
 			//printf("first IF\n");
 			if((status = device.SetCommand(_GO, 2,  LM) != RQ_SUCCESS))
