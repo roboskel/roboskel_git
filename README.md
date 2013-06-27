@@ -19,8 +19,8 @@ roboskel_git
   trying to minimize movement due to the problematic nature of Kinect tracker when the sensor is also moving
   
   To run :  
-  -	roscore  
- 	-	roslaunch openni_launch openni.launch  
+  -	roscore 
+  - roslaunch openni_launch openni.launch  
   -	rosrun servo_mast servo_mast  
   -	rosrun kinect_aux kinect_aux_node  
   -	rosrun openni_tracker openni_tracker  
