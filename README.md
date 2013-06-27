@@ -63,7 +63,4 @@ roboskel_git
     
   To run :   
   -	roscore  
-  -	rosrun joy joy_node  
-  -	rosrun gamepad_control gamepad  
-  -	rosrun gamepad_control gamepad_listener  
-  -	rosrun sdc2130 gameskel
+  -	roslaunch sdc2130 gremote.launch
