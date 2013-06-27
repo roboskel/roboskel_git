@@ -194,6 +194,10 @@ int main(int argc, char* argv[])
 	ros::Publisher cmr_pos   = nh.advertise<std_msgs::Float64>("tilt_angle",1);
 	printf( "Advertising Tilt Angle\n");
 
+	//FIVE SECONDS DELAY TO INITIALIZE TRACKER 
+	ros::Duration(5).sleep();
+
+
 	 while (ros::ok())
 	{
 		ros::Duration(1).sleep();
