@@ -20,8 +20,7 @@ roboskel_git
   
   To run :  
   -	roscore 
-  - roslaunch openni_launch openni.launch  
-  -	roslaunch simpub3 head_tracker.launch
+  - roslaunch simpub3 tracker2.launch
   
 3) gamepad_control 
 
