@@ -4,5 +4,5 @@
 	<node name="kinect_aux" pkg="kinect_aux" type="kinect_aux_node" />
 	<node name="cord_pub" pkg="cord_pub" type="cord_pub" />
 	<node name="openni_tracker" pkg="openni_tracker" type="openni_tracker" />
-	<node name="simpub" pkg="simpub3" type="simpub3"/>
-</launch
+	<node name="simpub" pkg="simpub3" type="simpub3" output="screen"/>
+</launch>
