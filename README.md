@@ -19,7 +19,6 @@ roboskel_git
   trying to minimize movement due to the problematic nature of Kinect tracker when the sensor is also moving
   
   To run :  
-  -	roscore 
   - roslaunch simpub3 tracker2.launch
   
 3) gamepad_control 
@@ -57,5 +56,4 @@ roboskel_git
     + Pressing the triangle button stops the robot, ignoring all movement orders, until triangle is pressed again
     
   To run :   
-  -	roscore  
   -	roslaunch sdc2130 gremote.launch
