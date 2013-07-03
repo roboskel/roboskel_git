@@ -1,14 +1,11 @@
 #include <iostream>
+#include <fstream>
 #include <stdio.h>
 #include <string.h>
 #include <vector>
-/*
-#include <stdio.h>
-#include <stdlib.h>
-#include <GL/glut.h>
-#include <AL/al.h>
-#include <AL/alut.h>
-*/
+#include <time.h>
+#include <math.h>
+
 #include "sdc2130_skel/RoboteqDevice.h"
 #include "sdc2130_skel/ErrorCodes.h"
 #include "sdc2130_skel/Constants.h"
@@ -17,23 +14,49 @@
 #include "ros/ros.h"
 #include "sdc2130_skel/teleop_skel.h"
 
-using namespace std;
-float functions[14]={0};
-int LM = 0 ;
-int RM = 0 ;
-int HB = 0 ; //handbrake signal
-int ESD = 0 ; //emergency shutdown signal
-int MODE = 0 ;
-double gp_funcs[14] = {0};
-string response = "";
-RoboteqDevice device;
-int status = -1;
-int i ;
 
-//ALuint sndBuffer, sndSource;
+using namespace std;
+
+	#define PI 3.14159265358979323846264338
+	#define DIAMETER 15.24
+	#define RESOLUTION 2000
+	#define WHEEL_BASE_WIDTH 40
+	#define TWOPI 360
+	#define RADS 57.2958
+				
+	double functions[14]={0};
+	double seconds;
+	int LM = 0 ;
+	int RM = 0 ;
+	int HB = 0 ; //handbrake signal
+	int ESD = 0 ; //emergency shutdown signal
+	int MODE = 0 ;
+	double gp_funcs[14] = {0};
+	string response = "";
+	RoboteqDevice device;
+	int status = -1;
+	int i ;
+	clock_t t;
+	
+	double posx = 0.0;
+	double posy = 0.0;
+	double posth = 0.0;
+	double mr = 0;
+	double ml = 0;
+	double mth = 0;
+	int dist = 0;
+	int total_dist = 0;
+	int battery = 0;
+	ros::Time current_time, last_time;
+	ros::Time write_time, cur_write_time, total_time;
+	ofstream file;
+
 
 void teleopCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 {	
+	
+	int lenc,renc;
+	current_time = ros::Time::now();
 	i=0;
 	for(std::vector<double>::const_iterator it = msg->data.begin(); it != msg->data.end(); ++it)
 	{
@@ -49,33 +72,37 @@ void teleopCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 		if (MODE==0)
 		{
 			MODE=1;
+			printf("USING ALTERNATE CONTROL\n\n");
 			if((status = device.SetCommand(_GO, 2,  0) != RQ_SUCCESS))
 			{
 				cout<<"failed --> \n"<<status<<endl;
 				device.Disconnect();
 				ros::shutdown();
 				
+				
 			}	
-		else 
+			else 
 			{
 				//cout<<"succeeded.\n"<<endl;
+				
 			}
 			ros::Duration(0.01).sleep(); 
-			//printf("Second IF\n");
-		if((status = device.SetCommand(_GO, 1,- 0)) != RQ_SUCCESS)
-			{
-				cout<<"failed --> \n"<<status<<endl;
-				device.Disconnect();
-				ros::shutdown();
-			}	
-		else
-			{
-				//cout<<"succeeded.\n"<<endl;
-			}
+				//printf("Second IF\n");
+			if((status = device.SetCommand(_GO, 1,- 0)) != RQ_SUCCESS)
+				{
+					cout<<"failed --> \n"<<status<<endl;
+					device.Disconnect();
+					ros::shutdown();
+				}	
+			else
+				{
+					//cout<<"succeeded.\n"<<endl;
+				}
 		}
 		else
 		{
 			MODE=0;
+			printf("WAITING GAMEPAD INPUT \n\n");
 		}
 	}
 	if(MODE==0)
@@ -96,6 +123,7 @@ void teleopCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 			else 
 				{
 					//cout<<"succeeded.\n"<<endl;
+					//rotL=device.GetValue(_S,2,rotL);
 				}
 				ros::Duration(0.01).sleep(); 
 				//printf("Second IF\n");
@@ -108,24 +136,50 @@ void teleopCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 			else
 				{
 					//cout<<"succeeded.\n"<<endl;
+					//rotR=device.GetValue(_S,1,rotR);
 				}
 			printf("Dave, stop. Stop, will you? Stop, Dave. Will you stop Dave? Stop, Dave.\n\n");
+			file<<"***********\n";
+			file<<"seconds : "<<seconds<<"\n";
+			file<<"mr : "<<mr<<"\n";
+			file<<"ml : "<<ml<<"\n";
+			file<<"mth : "<<mth<<"\n";
+			file<<"X : "<<posx<<"\n";
+			file<<"Y : "<<posy<<"\n";
+			file<<"Total Distance : "<<total_dist<<"\n";
+			file<<"Battery Voltage : "<<battery<<"\n";
+			file<<"************\n\n";
+			cur_write_time=ros::Time::now();
+			file<<"Seconds Elapsed "<<((cur_write_time-total_time).toSec())<<endl;
+			file.close();		
 			ros::Duration(3).sleep();
 			ESD = 1 ;
 			ros::shutdown();
 			return ;
+		}
+		///////////////////////////////////////////
+		//PRESS X TO RECORD STATUS TO LOG
+		///////////////////////////////////////////
+		else if (functions[4]==1)
+		{	
+			file<<"\n\nRECORDING AFTER REQUEST\n";
+			file<<"***********\n";
+			file<<"seconds : "<<seconds<<"\n";
+			file<<"mr : "<<mr<<"\n";
+			file<<"ml : "<<ml<<"\n";
+			file<<"mth : "<<mth<<"\n";
+			file<<"X : "<<posx<<"\n";
+			file<<"Y : "<<posy<<"\n";
+			file<<"Total Distance : "<<total_dist<<"\n";
+			file<<"Battery Voltage : "<<battery<<"\n";
+			file<<"************\n\n";
+			ros::Duration(1).sleep();	
 		}
 		////////////////////////////////////////////
 		//PRESS O BUTTON FOR 5 SECOND IMMOBILIZATION
 		///////////////////////////////////////////
 		else if (functions[3]==1)
 		{	
-				/*
-				alSourcei (sndSource, AL_BUFFER, sndBuffer);
-				alSourcePlay (sndSource);
-				alutSleep (1);
-				alutExit ();
-				*/
 			
 			//ROS_INFO("Temporary Immobilization Protocol Engaged. Stand By.\n");
 			printf("Temporary Immobilization Protocol Engaged. Stand By.\n\n");
@@ -190,6 +244,7 @@ void teleopCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 				{
 					//cout<<"succeeded.\n"<<endl;
 				}
+
 			}
 			else
 			{
@@ -206,8 +261,8 @@ void teleopCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 		if(HB==0)
 		{	
 			
-			LM=functions[0]*400;
-			RM=functions[1]*400;
+			LM=functions[0]*800;
+			RM=functions[1]*800;
 			if (LM>0)
 				LM=(int)(LM+0.5);
 			else
@@ -216,20 +271,11 @@ void teleopCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 				RM=(int)(RM+0.5);
 			else
 				RM=(int)(RM-0.5);
-			/*
-			if (functions[0] >= 0)
-				LM = (int) (functions[0] + 0.5); 
-			else 
-				LM = (int) (functions[0] - 0.5);
-			if (functions[1] >= 0)
-				RM = (int) (functions[1] + 0.5); 
-			else 
-				RM = (int) (functions[1] - 0.5);
-			*/
-			 
+
 			   
 			//printf("first IF\n");
 			if((status = device.SetCommand(_GO, 2,  LM) != RQ_SUCCESS))
+
 			{
 				//cout<<"failed --> \n"<<status<<endl;
 				device.Disconnect();
@@ -238,7 +284,8 @@ void teleopCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 			}	
 			else 
 			{
-				//cout<<"succeeded.\n"<<endl;
+				//if(device.GetValue(_C,2,rotL)!=RQ_SUCCESS)
+				//ROS_INFO("Encoder data decoding failed");  
 			}
 			//ros::Duration(0.01).sleep(); 
 			//printf("Second IF\n");
@@ -251,24 +298,90 @@ void teleopCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 			else
 			{
 				//cout<<"succeeded.\n"<<endl;
+				ROS_INFO("Encoder data decoding failed");  
 			}
 			//ros::Duration(0.01).sleep();
+
 		}
 	}
-}     
+	
+	}
+	if((device.GetValue(_S, 1, lenc)!=RQ_SUCCESS)||(device.GetValue(_S, 2, renc)!=RQ_SUCCESS))
+		{
+			ROS_INFO("Encoder data decoding failed\n");
+		}  
+	//if(device.GetValue(_S, 2, renc)!=RQ_SUCCESS)
+	//	{
+	//		ROS_INFO("Encoder data decoding failed\n");
+	//	}
+	else
+	{
+		ROS_INFO("left_%d Right_%d\n",lenc,-renc);
+		//ros::Duration(0.5).sleep();
+		seconds= (current_time - last_time).toSec();
+		mr = seconds*(-renc/60.0)*(DIAMETER*PI);
+		ml = seconds*(lenc/60.0)*(DIAMETER*PI);
+		dist=(ml+mr)/2.0;
+		total_dist +=abs(dist);
+		mth += (ml-mr)/WHEEL_BASE_WIDTH;
+		//mth -=(float)((int)(mth/TWOPI))*TWOPI;
+		posx += (dist*(cos(mth*RADS)));
+		posy += (dist*(sin(mth*RADS)));
+	}
+	
+	if(device.GetValue(_V,battery)!=RQ_SUCCESS)
+	{
+		ROS_INFO("Failed to read battery voltage\n");
+	}  
+	/*
+	printf("***********\n");
+	printf("seconds : %f\n",seconds);;
+	printf("mr : %f\n",mr);
+	printf("ml : %f\n",ml);
+	printf("mth : %f\n",mth);
+	printf("X : %f\n",posx);
+	printf("Y : %f\n",posy);
+	printf("Total Distance : %d\n",total_dist);
+	printf("Battery Voltage : %d\n",battery);
+	printf("************\n\n");
+	//ros::Duration(0.5).sleep();
+	*/
+	cur_write_time = ros::Time::now();
+	if ((cur_write_time.toSec()-write_time.toSec())>0.6)
+	{
+		file<<"***********\n";
+		file<<"seconds : "<<seconds<<"\n";
+		file<<"mr : "<<mr<<"\n";
+		file<<"ml : "<<ml<<"\n";
+		file<<"mth : "<<mth<<"\n";
+		file<<"X : "<<posx<<"\n";
+		file<<"Y : "<<posy<<"\n";
+		file<<"Total Distance : "<<total_dist<<"\n";
+		file<<"Battery Voltage : "<<battery<<"\n";
+		file<<"************\n\n";
+		write_time=ros::Time::now();		
+	}
+	
+	mr=0;
+	ml=0;
+	dist=0;
+	last_time = current_time;
 }
 
 int main(int argc, char *argv[])
 {
-	int status = device.Connect("/dev/ttyACM1");
 
+	int status = device.Connect("/dev/ttyACM1");
 	if(status != RQ_SUCCESS)
 	{
 		cout<<"Error connecting to device: "<<status<<"."<<endl;
 		return 1;
 	}
-	device.SetConfig(_RWD, 1, 0);
-	device.SetConfig(_RWD, 2, 0);
+	//device.SetConfig(_RWD, 1, 1000);
+	//device.SetConfig(_RWD, 2, 1000);
+	device.SetConfig(_RWD, 1, -1);
+	device.SetConfig(_RWD, 2, -1);
+	
 	ros::init(argc, argv, "sdc2130_skel");
 
 	ros::NodeHandle n;
@@ -293,27 +406,16 @@ int main(int argc, char *argv[])
     printf ("Sek Operational\n\n");
     ros::Duration(0.01).sleep(); //sleep for 10 ms
     
-    
-			/*
-			alutInit (&argc, argv);
-			sndBuffer = alutCreateBufferFromFile("/home/skel/r2ack.wav");
-			alGenSources (1, &sndSource);
-			*/
-    
-    
+	file.open ("roboskel_log.txt", ios::out | ios::binary);
+	write_time = ros::Time::now();
+	total_time =ros::Time::now();
+	file<<write_time<<"\n";
+	
 while (ros::ok())
     {	
-		if (ESD==1)
-		{
-			device.Disconnect();
-			return 0;
-		}
-		else
-		{
-			ros::spin();
-		}
-		
+		ros::spin();
 	}
+	
 	device.Disconnect();
 	return 0;
 }
