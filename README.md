@@ -54,6 +54,7 @@ roboskel_git
     + Immediate Shutdown by pressing the Start Button  
     + 5-Second Halt Using the O Button, during which all movement orders transmited via gamepad are ignored  
     + Pressing the triangle button stops the robot, ignoring all movement orders, until triangle is pressed again
+    + Loggin at intervals, also at command by pressing the X button
     
   To run :   
   -	roslaunch sdc2130 gremote.launch
