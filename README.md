@@ -53,8 +53,10 @@ roboskel_git
     turns  
     + Immediate Shutdown by pressing the Start Button  
     + 5-Second Halt Using the O Button, during which all movement orders transmited via gamepad are ignored  
-    + Pressing the triangle button stops the robot, ignoring all movement orders, until triangle is pressed again
-    + Loggin at intervals, also at command by pressing the X button
-    
+    + Pressing the triangle button stops the robot, ignoring all movement orders, until triangle is pressed again  
+    + Basic Odometry Functionality : By pressing the X button odometry is initialized, setting the position of the vehicle
+      at 0,0 and an angle of 0 degrees. From that point on, each time the X button is pressed, the vehicle's position is recorded
+      in a text file named roboskel_log.txt located in the ~/.ros directory.
+
   To run :   
   -	roslaunch sdc2130 gremote.launch
