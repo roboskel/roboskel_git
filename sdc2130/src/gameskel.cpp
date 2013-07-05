@@ -30,7 +30,7 @@ using namespace std;
 	int RM = 0 ;
 	int HB = 0 ; //handbrake signal
 	int ESD = 0 ; //emergency shutdown signal
-	int MODE = 0 ;
+	int MODE = 1 ;
 	double gp_funcs[14] = {0};
 	string response = "";
 	RoboteqDevice device;
@@ -68,7 +68,8 @@ void teleopCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 	//PRESS SELECT TO ALTERNATE BETWEEN NAVIGATION METHODS
 	//////////////////////////////////////////////////////
 	if(functions[10]==1)
-	{
+	{	
+		//ros::Duration(2)::sleep();
 		if (MODE==0)
 		{
 			MODE=1;
@@ -304,73 +305,72 @@ void teleopCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 
 		}
 	}
-	
-	}
-	if((device.GetValue(_S, 1, lenc)!=RQ_SUCCESS)||(device.GetValue(_S, 2, renc)!=RQ_SUCCESS))
+		if((device.GetValue(_S, 1, lenc)!=RQ_SUCCESS)||(device.GetValue(_S, 2, renc)!=RQ_SUCCESS))
 		{
 			ROS_INFO("Encoder data decoding failed\n");
 		}  
-	//if(device.GetValue(_S, 2, renc)!=RQ_SUCCESS)
-	//	{
-	//		ROS_INFO("Encoder data decoding failed\n");
-	//	}
-	else
-	{
-		ROS_INFO("left_%d Right_%d\n",lenc,-renc);
+		//if(device.GetValue(_S, 2, renc)!=RQ_SUCCESS)
+		//	{
+		//		ROS_INFO("Encoder data decoding failed\n");
+		//	}
+		else
+		{
+			ROS_INFO("left_%d Right_%d\n",lenc,-renc);
+			//ros::Duration(0.5).sleep();
+			seconds= (current_time - last_time).toSec();
+			mr = seconds*(-renc/60.0)*(DIAMETER*PI);
+			ml = seconds*(lenc/60.0)*(DIAMETER*PI);
+			dist=(ml+mr)/2.0;
+			total_dist +=abs(dist);
+			mth += (ml-mr)/WHEEL_BASE_WIDTH;
+			//mth -=(float)((int)(mth/TWOPI))*TWOPI;
+			posx += (dist*(cos(mth*RADS)));
+			posy += (dist*(sin(mth*RADS)));
+		}
+		
+		if(device.GetValue(_V,battery)!=RQ_SUCCESS)
+		{
+			ROS_INFO("Failed to read battery voltage\n");
+		}  
+		/*
+		printf("***********\n");
+		printf("seconds : %f\n",seconds);;
+		printf("mr : %f\n",mr);
+		printf("ml : %f\n",ml);
+		printf("mth : %f\n",mth);
+		printf("X : %f\n",posx);
+		printf("Y : %f\n",posy);
+		printf("Total Distance : %d\n",total_dist);
+		printf("Battery Voltage : %d\n",battery);
+		printf("************\n\n");
 		//ros::Duration(0.5).sleep();
-		seconds= (current_time - last_time).toSec();
-		mr = seconds*(-renc/60.0)*(DIAMETER*PI);
-		ml = seconds*(lenc/60.0)*(DIAMETER*PI);
-		dist=(ml+mr)/2.0;
-		total_dist +=abs(dist);
-		mth += (ml-mr)/WHEEL_BASE_WIDTH;
-		//mth -=(float)((int)(mth/TWOPI))*TWOPI;
-		posx += (dist*(cos(mth*RADS)));
-		posy += (dist*(sin(mth*RADS)));
-	}
+		*/
+		cur_write_time = ros::Time::now();
+		if ((cur_write_time.toSec()-write_time.toSec())>0.6)
+		{
+			file<<"***********\n";
+			file<<"seconds : "<<seconds<<"\n";
+			file<<"mr : "<<mr<<"\n";
+			file<<"ml : "<<ml<<"\n";
+			file<<"mth : "<<mth<<"\n";
+			file<<"X : "<<posx<<"\n";
+			file<<"Y : "<<posy<<"\n";
+			file<<"Total Distance : "<<total_dist<<"\n";
+			file<<"Battery Voltage : "<<battery<<"\n";
+			file<<"************\n\n";
+			write_time=ros::Time::now();		
+		}
+		
+		mr=0;
+		ml=0;
+		dist=0;
+		last_time = current_time;
+		}
 	
-	if(device.GetValue(_V,battery)!=RQ_SUCCESS)
-	{
-		ROS_INFO("Failed to read battery voltage\n");
-	}  
-	/*
-	printf("***********\n");
-	printf("seconds : %f\n",seconds);;
-	printf("mr : %f\n",mr);
-	printf("ml : %f\n",ml);
-	printf("mth : %f\n",mth);
-	printf("X : %f\n",posx);
-	printf("Y : %f\n",posy);
-	printf("Total Distance : %d\n",total_dist);
-	printf("Battery Voltage : %d\n",battery);
-	printf("************\n\n");
-	//ros::Duration(0.5).sleep();
-	*/
-	cur_write_time = ros::Time::now();
-	if ((cur_write_time.toSec()-write_time.toSec())>0.6)
-	{
-		file<<"***********\n";
-		file<<"seconds : "<<seconds<<"\n";
-		file<<"mr : "<<mr<<"\n";
-		file<<"ml : "<<ml<<"\n";
-		file<<"mth : "<<mth<<"\n";
-		file<<"X : "<<posx<<"\n";
-		file<<"Y : "<<posy<<"\n";
-		file<<"Total Distance : "<<total_dist<<"\n";
-		file<<"Battery Voltage : "<<battery<<"\n";
-		file<<"************\n\n";
-		write_time=ros::Time::now();		
-	}
-	
-	mr=0;
-	ml=0;
-	dist=0;
-	last_time = current_time;
 }
 
 int main(int argc, char *argv[])
 {
-
 	int status = device.Connect("/dev/ttyACM1");
 	if(status != RQ_SUCCESS)
 	{
@@ -410,7 +410,7 @@ int main(int argc, char *argv[])
 	write_time = ros::Time::now();
 	total_time =ros::Time::now();
 	file<<write_time<<"\n";
-	
+	ros::Duration(3).sleep();
 while (ros::ok())
     {	
 		ros::spin();
