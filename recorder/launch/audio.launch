@@ -1,0 +1,6 @@
+<launch>
+	<node name="joy_node" pkg="joy" type="joy_node" />
+	<node name="gamepad" pkg="gamepad_control" type="gamepad" />
+	<node name="gamepad_listener" pkg="gamepad_control" type="gamepad_listener" />
+	<node name="gp2" pkg="recorder" type="gp2" required="true"/>
+</launch>
