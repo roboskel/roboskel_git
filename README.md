@@ -61,10 +61,10 @@ roboskel_git
   To run :   
   -	roslaunch sdc2130 gremote.launch  
     
-5) recorder :
+5) recorder 
 
   Description : Multi aspect recording nodes using the Kinect. The project is comprised of 4 different nodes that can be run individually or  
-  in any combination the user needs. These are :  
+    in any combination the user needs. These are :  
   - record_skel : Records the joint positions (X,Y,Z) returned by the openni_tracker and writes them in a file named  
     skel.txt in the following format : Timestam<space><joint1_x><space><joint1_y><space>...<last_jointz><endl>.  
     The recordings are about 1/10 second apart.
@@ -95,7 +95,7 @@ roboskel_git
     
     listener.py
     - roslaunch audio.launch
-    User presses START to start recording and Ctrl-C to stop it  
+    User presses START to start recording and the X button to stop it  
     
     rec3
     - roslaunch openni_launch openni.launch
@@ -106,8 +106,20 @@ roboskel_git
     ALL the nodes
     - roslaunch openni_launch openni.launch  
     - roslaunch recorder full.launch
-    User presses START to start recording and the X button to stop it and Ctrl-C to stop the audio recording 
+    User presses START to start recording and the X button to stop it  
+    
+6) face_rec  
 
+  Description : A ROS wrapper for a face tracking program developed by Alexandros Loulemes. The program uses opencv to   
+  capture images from a camera and detect faces, and annotate them with a circle of different colour for each face detected.  
+  The ROS node records the id of each face, its coordinates and the radius of the circle around it. It then proceeds to   
+  publish a message containing this information for each face detected in every frame it processes. The message published is  
+  a vector of messages each containing the above information  
+  
+  To run :
+  -  roslaunch openni_launch openni.launch
+  -  roslaunch face_rec fr.launch
+  User presses START to start tracking and sending messages and the X button to quit the program
 
     
   
