@@ -1,5 +1,6 @@
 /home/skel/roboskel_workspace/sandbox/face_rec/build/CMakeFiles/ROSBUILD_genmsg_cpp.dir
 /home/skel/roboskel_workspace/sandbox/face_rec/build/CMakeFiles/ROSBUILD_genmsg_lisp.dir
+/home/skel/roboskel_workspace/sandbox/face_rec/build/CMakeFiles/ROSBUILD_genmsg_py.dir
 /home/skel/roboskel_workspace/sandbox/face_rec/build/CMakeFiles/ROSBUILD_gensrv_cpp.dir
 /home/skel/roboskel_workspace/sandbox/face_rec/build/CMakeFiles/ROSBUILD_gensrv_lisp.dir
 /home/skel/roboskel_workspace/sandbox/face_rec/build/CMakeFiles/clean-test-results.dir
@@ -7,6 +8,7 @@
 /home/skel/roboskel_workspace/sandbox/face_rec/build/CMakeFiles/rosbuild_precompile.dir
 /home/skel/roboskel_workspace/sandbox/face_rec/build/CMakeFiles/rosbuild_premsgsrvgen.dir
 /home/skel/roboskel_workspace/sandbox/face_rec/build/CMakeFiles/rospack_genmsg.dir
+/home/skel/roboskel_workspace/sandbox/face_rec/build/CMakeFiles/rospack_genmsg_all.dir
 /home/skel/roboskel_workspace/sandbox/face_rec/build/CMakeFiles/rospack_genmsg_libexe.dir
 /home/skel/roboskel_workspace/sandbox/face_rec/build/CMakeFiles/rospack_gensrv.dir
 /home/skel/roboskel_workspace/sandbox/face_rec/build/CMakeFiles/test.dir

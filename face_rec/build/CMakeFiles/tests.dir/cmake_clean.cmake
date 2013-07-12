@@ -1,4 +1,7 @@
 FILE(REMOVE_RECURSE
+  "../msg_gen"
+  "../src/face_rec/msg"
+  "../msg_gen"
   "CMakeFiles/tests"
 )
 

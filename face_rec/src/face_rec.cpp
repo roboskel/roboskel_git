@@ -16,6 +16,8 @@
 #include <opencv2/features2d/features2d.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
 #include "std_msgs/Float64MultiArray.h"
+#include "face_rec/faceData.h"
+#include "face_rec/faceDataArray.h"
 
 using namespace std;
 using namespace cv;
@@ -78,6 +80,7 @@ String nestedCascadeName ="./haarcascade_eye_tree_eyeglasses.xml";
  class FaceRec
 {
 ros::NodeHandle nh_; 
+ros::Publisher pub ;;
 image_transport::ImageTransport it_;
 image_transport::Subscriber image_sub_;
 image_transport::Subscriber depth_sub_;
@@ -95,7 +98,8 @@ FaceRec()
 : it_(nh_)
 {
 	
-   depth_pub_ = it_.advertise("out", 1);
+   pub = nh_.advertise<face_rec::faceDataArray>("faceDataArray", 100);
+
    image_sub_ = it_.subscribe("camera/rgb/image_color", 1, &FaceRec::imageCb, this);
 }
 
@@ -151,7 +155,15 @@ void detectAndDraw( Mat& img,
                    double scale)
 {	
 	face faces_str[50];
+	//MESSAGE CREATION
+	face_rec::faceData face_data;
+	face_rec::faceDataArray face_array;
+
+  
+
     int i = 0;
+    int c1=0;
+    int c2=0;
     double t = 0;
     vector<Rect> faces;
     const static Scalar colors[] =  { CV_RGB(0,0,255),
@@ -189,15 +201,14 @@ void detectAndDraw( Mat& img,
         center.y = cvRound((r->y + r->height*0.5)*scale);
         radius = cvRound((r->width + r->height)*0.25*scale);
         circle( img, center, radius, color, 3, 8, 0 );
-		faces_str[i].id=i;
-		faces_str[i].x = center.x;
-		faces_str[i].y = center.y;
-		faces_str[i].r = radius;
-		cout<<faces_str[i].id<<"\n";
-		cout<<faces_str[i].x<<"\n";
-		cout<<faces_str[i].y<<"\n";
-		cout<<faces_str[i].r<<"\n";
-		ros::Duration(5).sleep();
+        face_data.id=i;
+        face_data.x=center.x;
+        face_data.y=center.y;
+        face_data.radius=radius;
+
+		face_array.faces.push_back(face_data);
+		face_array.total++;
+
         if( nestedCascade.empty() )
             continue;
         smallImgROI = smallImg(*r);
@@ -215,18 +226,22 @@ void detectAndDraw( Mat& img,
             center.y = cvRound((r->y + nr->y + nr->height*0.5)*scale);
             radius = cvRound((nr->width + nr->height)*0.25*scale);
             circle( img, center, radius, color, 3, 8, 0 );
+            c2++;
+            face_data.id=c2++;
+			face_data.x=center.x;
+			face_data.y=center.y;
+			face_data.radius=radius;
+			face_array.faces.push_back(face_data);
+			face_array.total++;
+
         }
-		faces_str[i].id=i;
-		faces_str[i].x = center.x;
-		faces_str[i].y = center.y;
-		faces_str[i].r = radius;
-		cout<<faces_str[i].id<<"\n";
-		cout<<faces_str[i].x<<"\n";
-		cout<<faces_str[i].y<<"\n";
-		cout<<faces_str[i].r<<"\n";
-		ros::Duration(5).sleep();
+
+
     }
-    
+	pub.publish(face_array);
+
+  
+   
     
     cv::imshow( "Face_Detection", img );
 }
