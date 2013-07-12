@@ -99,7 +99,7 @@ roboskel_git
     
     rec3
     - roslaunch openni_launch openni.launch
-    - roslaunch recorder rec3.launch
+    - roslaunch recorder rec.launch
     User presses START to start recording and the X button to stop it  
 
     
