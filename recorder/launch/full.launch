@@ -2,9 +2,11 @@
 	<node name="joy_node" pkg="joy" type="joy_node" />
 	<node name="gamepad" pkg="gamepad_control" type="gamepad" />
 	<node name="gamepad_listener" pkg="gamepad_control" type="gamepad_listener" />
-	<node name="gp_2" pkg="recorder" type="gp_2"/>
-	<node name="hokuyo_node" pkg="hokuyo_node" type="hokuyo_node" required="true">
-	<node name="pylistener" pkg="recorder" type="listener.py" required="true"/>
-	<node name="hok_recorder" pkg="recorder" type="record_hok" required="true"/>
-	<node name="skel_recorder" pkg="recorder" type="record_skel" required="true"/>
+	<node name="gp_2" pkg="recorder" type="gp_2" required="true"/>
+	<node name="openni_tracker" pkg="openni_tracker" type="openni_tracker" required="true" output="screen"/>
+	<node name="hokuyo_node" pkg="hokuyo_node" type="hokuyo_node" required="true" output="screen"/>
+	<node name="pylistener" pkg="recorder" type="listener.py" required="true"  output="screen"/>
+	<node name="hok_recorder" pkg="recorder" type="record_hok" required="true"  output="screen"/>
+	<node name="skel_recorder" pkg="recorder" type="record_skel" required="true"  output="screen"/>
+	<node name= "img_recorder" pkg="recorder" type="rec3" required="true"  output="screen" />
 </launch>

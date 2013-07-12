@@ -1,6 +1,6 @@
 <launch>
 	<node name="joy_node" pkg="joy" type="joy_node" />
 	<node name="gamepad" pkg="gamepad_control" type="gamepad" />
-	<node name="gamepad_listener" pkg="gamepad_control" type="gamepad_listener" />
-	<node name="hokuyo_node" pkg="hokuyo_node" type="hokuyo_node" required="true"/>
+	<node name="gamepad_listener" pkg="gamepad_control" type="gamepad_listener" required="true" />
+	<node name="hokuyo_node" pkg="hokuyo_node" type="hokuyo_node" required="true" output="screen"/>
 </launch>
