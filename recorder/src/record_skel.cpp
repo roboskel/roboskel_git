@@ -14,10 +14,13 @@
 #include <tf/transform_listener.h>
 #include <tf/transform_broadcaster.h>
 #include <cmath>
-
+#include <chrono>
+#include <ctime>
 #define NUM_READINGS 1128;
 
 using namespace std;
+
+std::chrono::time_point<std::chrono::system_clock> p1;
 
 double head_x,head_y,head_z;
 double neck_x,neck_y,neck_z;
@@ -89,9 +92,12 @@ int main (int argc, char** argv)
 		//printf("%d",counter);
 		//counter++;
 		skel_cur_time=ros::Time::now();
-		if ((REC==1)&&(skel_cur_time.toSec()-(skel_last_time.toSec()))>0.1)
+		int i = 1;
+		seconds=skel_cur_time.toSec()-skel_last_time.toSec();
+		if ((REC==1)&&(seconds>0.1))
 		{	
 			listener.waitForTransform("/openni_depth_frame", "head_1",ros::Time(0),ros::Duration(30.0));
+			printf("STARTED");
 			try{
 			listener.lookupTransform("/openni_depth_frame", "head_1",
 									   ros::Time(0), transform);
@@ -286,9 +292,9 @@ int main (int argc, char** argv)
 			right_foot_y=origin.y();
 			right_foot_z=origin.z();
 			
-			time(&t);
-			timer=(long)t;
-			sstream<<timer;
+			p1 = std::chrono::system_clock::now();
+			sstream << std::chrono::duration_cast<std::chrono::milliseconds>(
+			p1.time_since_epoch()).count() ;
 			sstream>>skel_ts;
 			file<<skel_ts<<" ";
 			file<<head_x<<" "<<head_y<<" "<<head_z<<" ";

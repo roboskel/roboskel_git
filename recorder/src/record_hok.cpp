@@ -11,6 +11,8 @@
 #include <std_msgs/Float32.h>
 #include <std_msgs/Header.h>
 #include <sensor_msgs/LaserScan.h>
+#include <chrono>
+#include <ctime>
 
 #define NUM_READINGS 1128
 
@@ -19,11 +21,14 @@ using namespace std;
 float hok_read[NUM_READINGS] = {};
 int REC = 0;
 long int timer;
+double seconds ;
+
 time_t t;
 ros::Time hok_cur_time, hok_last_time;
 ofstream file;
 std::stringstream sstream ;
 std::string hok_ts;
+std::chrono::time_point<std::chrono::system_clock> p1;
 
 void hok_cb(const sensor_msgs::LaserScan::ConstPtr& scan)
   {
@@ -34,11 +39,16 @@ void hok_cb(const sensor_msgs::LaserScan::ConstPtr& scan)
 	if(REC==1)
 	{	
 		hok_cur_time = ros::Time::now();
-        if(((hok_cur_time.toSec())-(hok_last_time.toSec()))>0.1)
+		seconds=hok_cur_time.toSec()-hok_last_time.toSec();
+        if(seconds>0.1)
         {	
-			time(&t);
-			timer = (long)t;
-            sstream << timer;
+			file<<"Time ";
+			p1 = std::chrono::system_clock::now();
+			sstream << std::chrono::duration_cast<std::chrono::milliseconds>(
+			p1.time_since_epoch()).count() ;
+			//time(&t);
+			//timer = (long)t;
+            //sstream << timer << std::setprecision(9) << seconds;
             hok_ts = sstream.str();
             file<<hok_ts<<" ";
 			for( std::vector<float>::size_type i = 0; i != ranges.size(); i++) 
@@ -83,7 +93,7 @@ void chatterCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 
 int main(int argc, char** argv)
 {	
-    file.open ("./hok.txt", ios::out | ios::binary);
+    file.open ("./_laser.data", ios::out | ios::binary);
     ros::init(argc, argv, "recorder");
     ros::NodeHandle n;
     ros::Subscriber gp_in,hok_in;

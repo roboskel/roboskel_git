@@ -17,25 +17,34 @@
 #include <opencv2/features2d/features2d.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
 #include "std_msgs/Float64MultiArray.h"
+#include <sys/time.h>
+#include <chrono>
+#include <ctime>
 using namespace std;
 ofstream file;
 
 int REC = 0;
 
+struct timeval start1, end1;
+struct timeval start2, end2;
+long mtime1, seconds1_, useconds1;
+long mtime2, seconds2_, useconds2;      
 time_t t;
 time_t t2;
 long int timer ;
 long int timer2;
-double seconds ;
-double seconds2;
-
+double seconds=0 ;
+double sec_temp=0;
+double sec_temp2=0;
+double seconds2=0;
+std::chrono::time_point<std::chrono::system_clock> p1, p2;
 ros::Time rgb_cur_time, rgb_last_time;
 ros::Time depth_cur_time, depth_last_time;
 
- std::string path ="rgb";
- std::string path2 ="dpt";
+ std::string path ="image_";
+ std::string path2 ="depth_";
  std::string png = ".png";
- std::string txt = ".bin";
+ std::string txt = ".dep.npy";
  std::string jpg = ".jpg";
  std::string path_ts;
  std::string path2_ts;
@@ -75,9 +84,17 @@ void imageCb(const sensor_msgs::ImageConstPtr & msg)
                 if(seconds>0.1)
                 {	
 				
-                    time(&t);
-                    timer = (long)t;
-                    sstream << timer << std::setprecision(4) << seconds;
+                    //time(&t);
+                    //timer = (long)t;
+                    //gettimeofday(&end1, NULL);
+					//seconds1_ = end1.tv_sec-start1.tv_sec;
+					//useconds1 = end1.tv_usec-start1.tv_usec;
+					//mtime1=((seconds1_) * 1000 + useconds1/1000.0) + 0.5;
+					
+					p1 = std::chrono::system_clock::now();
+					sstream << std::chrono::duration_cast<std::chrono::milliseconds>(
+					p1.time_since_epoch()).count() ;
+                    //sstream << timer << std::setprecision(5) << seconds;
                     //sstream.str(std::string());
 					//sstream.clear();
 					//sstream<<seconds;
@@ -132,9 +149,10 @@ void depthInfoCb(const sensor_msgs::ImageConstPtr & msg)
 		if(seconds2>0.1)
 		{	
 					
-			time(&t2);
-			timer2 = (long)t2;
-			sstream2 << timer2<<std::setprecision(4)<<seconds2;
+			p2 = std::chrono::system_clock::now();
+			sstream2 << std::chrono::duration_cast<std::chrono::milliseconds>(
+			p2.time_since_epoch()).count() ; 
+			//sstream2 << timer2<<std::setprecision(5)<<seconds2;
 			path2_ts = sstream2.str();
 			path2_ts=path2+path2_ts+txt;
 			//printf("path 2 %s\n",path2_ts.c_str());
@@ -210,7 +228,10 @@ int main(int argc, char** argv)
    
     rgb_last_time = ros::Time::now();
     depth_last_time = ros::Time::now();
-       
+    
+	gettimeofday(&start1, NULL);
+	gettimeofday(&start2, NULL);
+	         
     printf("Waiting gamepad Input\n");
     gp_in =n.subscribe("gp_functions", 1, chatterCallback);
     DepthInfo ic;
