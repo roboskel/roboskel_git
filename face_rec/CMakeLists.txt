@@ -29,7 +29,11 @@ rosbuild_genmsg()
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
 rosbuild_add_executable(face_rec src/face_rec.cpp)
+rosbuild_add_executable(face_rec_2 src/face_rec_2.cpp)
+rosbuild_add_executable(cap_img src/cap_img.cpp)
 rosbuild_add_boost_directories()
 rosbuild_link_boost(face_rec  filesystem system)
+rosbuild_link_boost(face_rec_2  filesystem system)
+
 
 

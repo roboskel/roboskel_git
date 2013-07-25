@@ -9,6 +9,7 @@
 #include "std_msgs/String.h"
 #include "std_msgs/Float64MultiArray.h"
 #include <std_msgs/Float32.h>
+#include "std_msgs/Float64.h"
 #include <std_msgs/Header.h>
 #include <math.h>
 #include <tf/transform_listener.h>
@@ -74,6 +75,27 @@ void chatterCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
     }
 }
 
+
+void callback(const std_msgs::Float64::ConstPtr& msg)
+{
+    float start = msg->data; //START gia na 3ekinhsei to record
+		//X gia na stamathsei
+    //printf("Press Start to Start Recording \n");
+    if (start==1)
+    {	
+		//printf("Started Recording Skeleton\n");
+        REC = 1;
+        ros::Duration(1).sleep();
+
+    }
+    else if ((REC==1)&&(start==0))
+    {
+        REC = 0;
+        //printf("Stopped Recording Skeleton \n");
+		ros::shutdown();
+    }
+}
+
 int main (int argc, char** argv)
 {	
 	//int counter=0;
@@ -81,7 +103,8 @@ int main (int argc, char** argv)
 	ros::init(argc, argv, "recorder");
 	ros::NodeHandle node;
     ros::Subscriber gp_in;
-    gp_in =node.subscribe("gp_functions2", 1, chatterCallback);
+    //gp_in =node.subscribe("gp_functions2", 1, chatterCallback);
+    gp_in =node.subscribe("coms",1,callback);
 	tf::TransformListener listener;
 	tf::Vector3 origin;
 	tf::StampedTransform transform;

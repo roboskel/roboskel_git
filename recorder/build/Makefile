@@ -355,6 +355,19 @@ tests/fast:
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/build
 .PHONY : tests/fast
 
+#=============================================================================
+# Target rules for targets named tf_test
+
+# Build rule for target.
+tf_test: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 tf_test
+.PHONY : tf_test
+
+# fast build rule for target.
+tf_test/fast:
+	$(MAKE) -f CMakeFiles/tf_test.dir/build.make CMakeFiles/tf_test.dir/build
+.PHONY : tf_test/fast
+
 # target to build an object file
 src/gp2.o:
 	$(MAKE) -f CMakeFiles/gp2.dir/build.make CMakeFiles/gp2.dir/src/gp2.o
@@ -430,6 +443,21 @@ src/recorder.s:
 	$(MAKE) -f CMakeFiles/recorder.dir/build.make CMakeFiles/recorder.dir/src/recorder.s
 .PHONY : src/recorder.s
 
+# target to build an object file
+src/tf_test.o:
+	$(MAKE) -f CMakeFiles/tf_test.dir/build.make CMakeFiles/tf_test.dir/src/tf_test.o
+.PHONY : src/tf_test.o
+
+# target to preprocess a source file
+src/tf_test.i:
+	$(MAKE) -f CMakeFiles/tf_test.dir/build.make CMakeFiles/tf_test.dir/src/tf_test.i
+.PHONY : src/tf_test.i
+
+# target to generate assembly for a file
+src/tf_test.s:
+	$(MAKE) -f CMakeFiles/tf_test.dir/build.make CMakeFiles/tf_test.dir/src/tf_test.s
+.PHONY : src/tf_test.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -458,6 +486,7 @@ help:
 	@echo "... test-results"
 	@echo "... test-results-run"
 	@echo "... tests"
+	@echo "... tf_test"
 	@echo "... src/gp2.o"
 	@echo "... src/gp2.i"
 	@echo "... src/gp2.s"
@@ -473,6 +502,9 @@ help:
 	@echo "... src/recorder.o"
 	@echo "... src/recorder.i"
 	@echo "... src/recorder.s"
+	@echo "... src/tf_test.o"
+	@echo "... src/tf_test.i"
+	@echo "... src/tf_test.s"
 .PHONY : help
 
 

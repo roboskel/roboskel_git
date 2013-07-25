@@ -27,11 +27,17 @@ std_msgs/String.h
 /home/skel/roboskel_workspace/sandbox/recorder/src/std_msgs/String.h
 std_msgs/Float64MultiArray.h
 /home/skel/roboskel_workspace/sandbox/recorder/src/std_msgs/Float64MultiArray.h
+std_msgs/Float64.h
+/home/skel/roboskel_workspace/sandbox/recorder/src/std_msgs/Float64.h
 std_msgs/Float32.h
 -
 std_msgs/Header.h
 -
 sensor_msgs/LaserScan.h
+-
+chrono
+-
+ctime
 -
 
 /opt/ros/fuerte/include/XmlRpcDecl.h
@@ -663,6 +669,22 @@ std_msgs/Header.h
 -
 
 /opt/ros/fuerte/include/std_msgs/Float32.h
+string
+-
+vector
+-
+map
+-
+ros/types.h
+-
+ros/serialization.h
+-
+ros/builtin_message_traits.h
+-
+ros/message_operations.h
+-
+
+/opt/ros/fuerte/include/std_msgs/Float64.h
 string
 -
 vector

@@ -69,19 +69,21 @@ CMakeFiles/rec3.dir/src/rec3.o: /opt/ros/fuerte/share/rospy/manifest.xml
 CMakeFiles/rec3.dir/src/rec3.o: /opt/ros/fuerte/share/rostest/manifest.xml
 CMakeFiles/rec3.dir/src/rec3.o: /opt/ros/fuerte/share/roswtf/manifest.xml
 CMakeFiles/rec3.dir/src/rec3.o: /opt/ros/fuerte/stacks/geometry/tf/manifest.xml
+CMakeFiles/rec3.dir/src/rec3.o: /opt/ros/fuerte/stacks/openni_kinect/openni/manifest.xml
+CMakeFiles/rec3.dir/src/rec3.o: /opt/ros/fuerte/stacks/openni_kinect/nite/manifest.xml
 CMakeFiles/rec3.dir/src/rec3.o: /opt/ros/fuerte/stacks/geometry/tf/msg_gen/generated
 CMakeFiles/rec3.dir/src/rec3.o: /opt/ros/fuerte/stacks/geometry/tf/srv_gen/generated
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/skel/roboskel_workspace/sandbox/recorder/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/rec3.dir/src/rec3.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -DBT_USE_DOUBLE_PRECISION -DBT_EULER_DEFAULT_ZYX -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/rec3.dir/src/rec3.o -c /home/skel/roboskel_workspace/sandbox/recorder/src/rec3.cpp
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -DBT_USE_DOUBLE_PRECISION -DBT_EULER_DEFAULT_ZYX -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -std=gnu++0x -o CMakeFiles/rec3.dir/src/rec3.o -c /home/skel/roboskel_workspace/sandbox/recorder/src/rec3.cpp
 
 CMakeFiles/rec3.dir/src/rec3.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/rec3.dir/src/rec3.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -DBT_USE_DOUBLE_PRECISION -DBT_EULER_DEFAULT_ZYX -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -E /home/skel/roboskel_workspace/sandbox/recorder/src/rec3.cpp > CMakeFiles/rec3.dir/src/rec3.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -DBT_USE_DOUBLE_PRECISION -DBT_EULER_DEFAULT_ZYX -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -std=gnu++0x -E /home/skel/roboskel_workspace/sandbox/recorder/src/rec3.cpp > CMakeFiles/rec3.dir/src/rec3.i
 
 CMakeFiles/rec3.dir/src/rec3.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/rec3.dir/src/rec3.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -DBT_USE_DOUBLE_PRECISION -DBT_EULER_DEFAULT_ZYX -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -S /home/skel/roboskel_workspace/sandbox/recorder/src/rec3.cpp -o CMakeFiles/rec3.dir/src/rec3.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -DBT_USE_DOUBLE_PRECISION -DBT_EULER_DEFAULT_ZYX -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -std=gnu++0x -S /home/skel/roboskel_workspace/sandbox/recorder/src/rec3.cpp -o CMakeFiles/rec3.dir/src/rec3.s
 
 CMakeFiles/rec3.dir/src/rec3.o.requires:
 .PHONY : CMakeFiles/rec3.dir/src/rec3.o.requires

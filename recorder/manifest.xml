@@ -16,6 +16,8 @@
   <depend package="image_transport"/>
   <depend package="std_srvs"/>
   <depend package="tf"/>
+  <depend package="nite"/>
+  <depend package="openni"/>
 
 </package>
 

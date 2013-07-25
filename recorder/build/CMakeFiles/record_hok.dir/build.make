@@ -69,19 +69,21 @@ CMakeFiles/record_hok.dir/src/record_hok.o: /opt/ros/fuerte/share/rospy/manifest
 CMakeFiles/record_hok.dir/src/record_hok.o: /opt/ros/fuerte/share/rostest/manifest.xml
 CMakeFiles/record_hok.dir/src/record_hok.o: /opt/ros/fuerte/share/roswtf/manifest.xml
 CMakeFiles/record_hok.dir/src/record_hok.o: /opt/ros/fuerte/stacks/geometry/tf/manifest.xml
+CMakeFiles/record_hok.dir/src/record_hok.o: /opt/ros/fuerte/stacks/openni_kinect/openni/manifest.xml
+CMakeFiles/record_hok.dir/src/record_hok.o: /opt/ros/fuerte/stacks/openni_kinect/nite/manifest.xml
 CMakeFiles/record_hok.dir/src/record_hok.o: /opt/ros/fuerte/stacks/geometry/tf/msg_gen/generated
 CMakeFiles/record_hok.dir/src/record_hok.o: /opt/ros/fuerte/stacks/geometry/tf/srv_gen/generated
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/skel/roboskel_workspace/sandbox/recorder/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/record_hok.dir/src/record_hok.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -DBT_USE_DOUBLE_PRECISION -DBT_EULER_DEFAULT_ZYX -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -o CMakeFiles/record_hok.dir/src/record_hok.o -c /home/skel/roboskel_workspace/sandbox/recorder/src/record_hok.cpp
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -DBT_USE_DOUBLE_PRECISION -DBT_EULER_DEFAULT_ZYX -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -std=gnu++0x -o CMakeFiles/record_hok.dir/src/record_hok.o -c /home/skel/roboskel_workspace/sandbox/recorder/src/record_hok.cpp
 
 CMakeFiles/record_hok.dir/src/record_hok.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/record_hok.dir/src/record_hok.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -DBT_USE_DOUBLE_PRECISION -DBT_EULER_DEFAULT_ZYX -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -E /home/skel/roboskel_workspace/sandbox/recorder/src/record_hok.cpp > CMakeFiles/record_hok.dir/src/record_hok.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -DBT_USE_DOUBLE_PRECISION -DBT_EULER_DEFAULT_ZYX -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -std=gnu++0x -E /home/skel/roboskel_workspace/sandbox/recorder/src/record_hok.cpp > CMakeFiles/record_hok.dir/src/record_hok.i
 
 CMakeFiles/record_hok.dir/src/record_hok.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/record_hok.dir/src/record_hok.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -DBT_USE_DOUBLE_PRECISION -DBT_EULER_DEFAULT_ZYX -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -S /home/skel/roboskel_workspace/sandbox/recorder/src/record_hok.cpp -o CMakeFiles/record_hok.dir/src/record_hok.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -DBT_USE_DOUBLE_PRECISION -DBT_EULER_DEFAULT_ZYX -W -Wall -Wno-unused-parameter -fno-strict-aliasing -pthread -std=gnu++0x -S /home/skel/roboskel_workspace/sandbox/recorder/src/record_hok.cpp -o CMakeFiles/record_hok.dir/src/record_hok.s
 
 CMakeFiles/record_hok.dir/src/record_hok.o.requires:
 .PHONY : CMakeFiles/record_hok.dir/src/record_hok.o.requires

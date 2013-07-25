@@ -69,6 +69,8 @@ CMakeFiles/gp2.dir/src/gp2.o: /opt/ros/fuerte/share/rospy/manifest.xml
 CMakeFiles/gp2.dir/src/gp2.o: /opt/ros/fuerte/share/rostest/manifest.xml
 CMakeFiles/gp2.dir/src/gp2.o: /opt/ros/fuerte/share/roswtf/manifest.xml
 CMakeFiles/gp2.dir/src/gp2.o: /opt/ros/fuerte/stacks/geometry/tf/manifest.xml
+CMakeFiles/gp2.dir/src/gp2.o: /opt/ros/fuerte/stacks/openni_kinect/openni/manifest.xml
+CMakeFiles/gp2.dir/src/gp2.o: /opt/ros/fuerte/stacks/openni_kinect/nite/manifest.xml
 CMakeFiles/gp2.dir/src/gp2.o: /opt/ros/fuerte/stacks/geometry/tf/msg_gen/generated
 CMakeFiles/gp2.dir/src/gp2.o: /opt/ros/fuerte/stacks/geometry/tf/srv_gen/generated
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/skel/roboskel_workspace/sandbox/recorder/build/CMakeFiles $(CMAKE_PROGRESS_1)

@@ -25,8 +25,8 @@
    (radius
     :reader radius
     :initarg :radius
-    :type cl:float
-    :initform 0.0))
+    :type cl:integer
+    :initform 0))
 )
 
 (cl:defclass faceData (<faceData>)
@@ -76,11 +76,12 @@
     (cl:write-byte (cl:ldb (cl:byte 8 16) unsigned) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 24) unsigned) ostream)
     )
-  (cl:let ((bits (roslisp-utils:encode-single-float-bits (cl:slot-value msg 'radius))))
-    (cl:write-byte (cl:ldb (cl:byte 8 0) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 8) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 16) bits) ostream)
-    (cl:write-byte (cl:ldb (cl:byte 8 24) bits) ostream))
+  (cl:let* ((signed (cl:slot-value msg 'radius)) (unsigned (cl:if (cl:< signed 0) (cl:+ signed 4294967296) signed)))
+    (cl:write-byte (cl:ldb (cl:byte 8 0) unsigned) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 8) unsigned) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 16) unsigned) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 24) unsigned) ostream)
+    )
 )
 (cl:defmethod roslisp-msg-protocol:deserialize ((msg <faceData>) istream)
   "Deserializes a message object of type '<faceData>"
@@ -102,12 +103,12 @@
       (cl:setf (cl:ldb (cl:byte 8 16) unsigned) (cl:read-byte istream))
       (cl:setf (cl:ldb (cl:byte 8 24) unsigned) (cl:read-byte istream))
       (cl:setf (cl:slot-value msg 'y) (cl:if (cl:< unsigned 2147483648) unsigned (cl:- unsigned 4294967296))))
-    (cl:let ((bits 0))
-      (cl:setf (cl:ldb (cl:byte 8 0) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 8) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 16) bits) (cl:read-byte istream))
-      (cl:setf (cl:ldb (cl:byte 8 24) bits) (cl:read-byte istream))
-    (cl:setf (cl:slot-value msg 'radius) (roslisp-utils:decode-single-float-bits bits)))
+    (cl:let ((unsigned 0))
+      (cl:setf (cl:ldb (cl:byte 8 0) unsigned) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 8) unsigned) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 16) unsigned) (cl:read-byte istream))
+      (cl:setf (cl:ldb (cl:byte 8 24) unsigned) (cl:read-byte istream))
+      (cl:setf (cl:slot-value msg 'radius) (cl:if (cl:< unsigned 2147483648) unsigned (cl:- unsigned 4294967296))))
   msg
 )
 (cl:defmethod roslisp-msg-protocol:ros-datatype ((msg (cl:eql '<faceData>)))
@@ -118,16 +119,16 @@
   "face_rec/faceData")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql '<faceData>)))
   "Returns md5sum for a message object of type '<faceData>"
-  "d37c535c9f327feb1ef5334e88afc6ae")
+  "9d78cd3dd34909f2879f340cd9e32ba3")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql 'faceData)))
   "Returns md5sum for a message object of type 'faceData"
-  "d37c535c9f327feb1ef5334e88afc6ae")
+  "9d78cd3dd34909f2879f340cd9e32ba3")
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql '<faceData>)))
   "Returns full string definition for message of type '<faceData>"
-  (cl:format cl:nil "  int32 id~%  int32 x~%  int32 y~%  float32 radius~%~%~%"))
+  (cl:format cl:nil "  int32 id~%  int32 x~%  int32 y~%  int32 radius~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql 'faceData)))
   "Returns full string definition for message of type 'faceData"
-  (cl:format cl:nil "  int32 id~%  int32 x~%  int32 y~%  float32 radius~%~%~%"))
+  (cl:format cl:nil "  int32 id~%  int32 x~%  int32 y~%  int32 radius~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:serialization-length ((msg <faceData>))
   (cl:+ 0
      4

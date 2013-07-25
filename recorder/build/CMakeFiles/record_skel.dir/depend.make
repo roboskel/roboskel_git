@@ -75,6 +75,7 @@ CMakeFiles/record_skel.dir/src/record_skel.o: /opt/ros/fuerte/include/sensor_msg
 CMakeFiles/record_skel.dir/src/record_skel.o: /opt/ros/fuerte/include/sensor_msgs/PointCloud.h
 CMakeFiles/record_skel.dir/src/record_skel.o: /opt/ros/fuerte/include/std_msgs/Empty.h
 CMakeFiles/record_skel.dir/src/record_skel.o: /opt/ros/fuerte/include/std_msgs/Float32.h
+CMakeFiles/record_skel.dir/src/record_skel.o: /opt/ros/fuerte/include/std_msgs/Float64.h
 CMakeFiles/record_skel.dir/src/record_skel.o: /opt/ros/fuerte/include/std_msgs/Float64MultiArray.h
 CMakeFiles/record_skel.dir/src/record_skel.o: /opt/ros/fuerte/include/std_msgs/Header.h
 CMakeFiles/record_skel.dir/src/record_skel.o: /opt/ros/fuerte/include/std_msgs/MultiArrayDimension.h

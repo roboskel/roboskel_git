@@ -1,0 +1,11 @@
+<launch>
+	 <!-- <node name="joy_node" pkg="joy" type="joy_node" />
+	<node name="gamepad" pkg="gamepad_control" type="gamepad" />
+	<node name="gamepad_listener" pkg="gamepad_control" type="gamepad_listener" />
+	<node name="gp_2" pkg="recorder" type="gp_2" required="true"/>
+	<node name="gp2" pkg="recorder" type="gp2" required="true"/> -->
+	<node name="hokuyo_node" pkg="hokuyo_node" type="hokuyo_node" output="screen"/>
+	<node name="hok_recorder" pkg="recorder" type="record_hok" required="true"  output="screen"/>
+	<node name= "img_recorder" pkg="recorder" type="rec3" required="true"  output="screen" />
+	<node name= "audio_recorder" pkg="recorder" type="listener_s.py" required="true"  output="screen"/>
+</launch>

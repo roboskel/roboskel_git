@@ -7,7 +7,7 @@ import struct
 import face_rec.msg
 
 class faceDataArray(genpy.Message):
-  _md5sum = "ea2fd606988b2ff49ed26c5c6c737612"
+  _md5sum = "5eda7794b71ef213bb4e6063a4a0d838"
   _type = "face_rec/faceDataArray"
   _has_header = False #flag to mark the presence of a Header object
   _full_text = """  faceData[] faces
@@ -18,7 +18,7 @@ MSG: face_rec/faceData
   int32 id
   int32 x
   int32 y
-  float32 radius
+  int32 radius
 
 """
   __slots__ = ['faces','total']
@@ -65,7 +65,7 @@ MSG: face_rec/faceData
       buff.write(_struct_I.pack(length))
       for val1 in self.faces:
         _x = val1
-        buff.write(_struct_3if.pack(_x.id, _x.x, _x.y, _x.radius))
+        buff.write(_struct_4i.pack(_x.id, _x.x, _x.y, _x.radius))
       buff.write(_struct_i.pack(self.total))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
@@ -88,7 +88,7 @@ MSG: face_rec/faceData
         _x = val1
         start = end
         end += 16
-        (_x.id, _x.x, _x.y, _x.radius,) = _struct_3if.unpack(str[start:end])
+        (_x.id, _x.x, _x.y, _x.radius,) = _struct_4i.unpack(str[start:end])
         self.faces.append(val1)
       start = end
       end += 4
@@ -109,7 +109,7 @@ MSG: face_rec/faceData
       buff.write(_struct_I.pack(length))
       for val1 in self.faces:
         _x = val1
-        buff.write(_struct_3if.pack(_x.id, _x.x, _x.y, _x.radius))
+        buff.write(_struct_4i.pack(_x.id, _x.x, _x.y, _x.radius))
       buff.write(_struct_i.pack(self.total))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
@@ -133,7 +133,7 @@ MSG: face_rec/faceData
         _x = val1
         start = end
         end += 16
-        (_x.id, _x.x, _x.y, _x.radius,) = _struct_3if.unpack(str[start:end])
+        (_x.id, _x.x, _x.y, _x.radius,) = _struct_4i.unpack(str[start:end])
         self.faces.append(val1)
       start = end
       end += 4
@@ -144,4 +144,4 @@ MSG: face_rec/faceData
 
 _struct_I = genpy.struct_I
 _struct_i = struct.Struct("<i")
-_struct_3if = struct.Struct("<3if")
+_struct_4i = struct.Struct("<4i")

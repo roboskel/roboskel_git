@@ -75,6 +75,7 @@ CMakeFiles/rec3.dir/src/rec3.o: /opt/ros/fuerte/include/sensor_msgs/CameraInfo.h
 CMakeFiles/rec3.dir/src/rec3.o: /opt/ros/fuerte/include/sensor_msgs/Image.h
 CMakeFiles/rec3.dir/src/rec3.o: /opt/ros/fuerte/include/sensor_msgs/RegionOfInterest.h
 CMakeFiles/rec3.dir/src/rec3.o: /opt/ros/fuerte/include/sensor_msgs/image_encodings.h
+CMakeFiles/rec3.dir/src/rec3.o: /opt/ros/fuerte/include/std_msgs/Float64.h
 CMakeFiles/rec3.dir/src/rec3.o: /opt/ros/fuerte/include/std_msgs/Float64MultiArray.h
 CMakeFiles/rec3.dir/src/rec3.o: /opt/ros/fuerte/include/std_msgs/Header.h
 CMakeFiles/rec3.dir/src/rec3.o: /opt/ros/fuerte/include/std_msgs/MultiArrayDimension.h

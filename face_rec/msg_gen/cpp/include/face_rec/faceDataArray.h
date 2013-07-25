@@ -69,12 +69,12 @@ template<class ContainerAllocator>
 struct MD5Sum< ::face_rec::faceDataArray_<ContainerAllocator> > {
   static const char* value() 
   {
-    return "ea2fd606988b2ff49ed26c5c6c737612";
+    return "5eda7794b71ef213bb4e6063a4a0d838";
   }
 
   static const char* value(const  ::face_rec::faceDataArray_<ContainerAllocator> &) { return value(); } 
-  static const uint64_t static_value1 = 0xea2fd606988b2ff4ULL;
-  static const uint64_t static_value2 = 0x9ed26c5c6c737612ULL;
+  static const uint64_t static_value1 = 0x5eda7794b71ef213ULL;
+  static const uint64_t static_value2 = 0xbb4e6063a4a0d838ULL;
 };
 
 template<class ContainerAllocator>
@@ -99,7 +99,7 @@ MSG: face_rec/faceData\n\
   int32 id\n\
   int32 x\n\
   int32 y\n\
-  float32 radius\n\
+  int32 radius\n\
 \n\
 ";
   }

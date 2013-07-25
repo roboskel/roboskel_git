@@ -58,6 +58,7 @@ CMakeFiles/record_hok.dir/src/record_hok.o: /opt/ros/fuerte/include/ros/wall_tim
 CMakeFiles/record_hok.dir/src/record_hok.o: /opt/ros/fuerte/include/rosconsole/macros_generated.h
 CMakeFiles/record_hok.dir/src/record_hok.o: /opt/ros/fuerte/include/sensor_msgs/LaserScan.h
 CMakeFiles/record_hok.dir/src/record_hok.o: /opt/ros/fuerte/include/std_msgs/Float32.h
+CMakeFiles/record_hok.dir/src/record_hok.o: /opt/ros/fuerte/include/std_msgs/Float64.h
 CMakeFiles/record_hok.dir/src/record_hok.o: /opt/ros/fuerte/include/std_msgs/Float64MultiArray.h
 CMakeFiles/record_hok.dir/src/record_hok.o: /opt/ros/fuerte/include/std_msgs/Header.h
 CMakeFiles/record_hok.dir/src/record_hok.o: /opt/ros/fuerte/include/std_msgs/MultiArrayDimension.h

@@ -25,7 +25,7 @@ struct faceData_ {
   : id(0)
   , x(0)
   , y(0)
-  , radius(0.0)
+  , radius(0)
   {
   }
 
@@ -33,7 +33,7 @@ struct faceData_ {
   : id(0)
   , x(0)
   , y(0)
-  , radius(0.0)
+  , radius(0)
   {
   }
 
@@ -46,8 +46,8 @@ struct faceData_ {
   typedef int32_t _y_type;
   int32_t y;
 
-  typedef float _radius_type;
-  float radius;
+  typedef int32_t _radius_type;
+  int32_t radius;
 
 
   typedef boost::shared_ptr< ::face_rec::faceData_<ContainerAllocator> > Ptr;
@@ -78,12 +78,12 @@ template<class ContainerAllocator>
 struct MD5Sum< ::face_rec::faceData_<ContainerAllocator> > {
   static const char* value() 
   {
-    return "d37c535c9f327feb1ef5334e88afc6ae";
+    return "9d78cd3dd34909f2879f340cd9e32ba3";
   }
 
   static const char* value(const  ::face_rec::faceData_<ContainerAllocator> &) { return value(); } 
-  static const uint64_t static_value1 = 0xd37c535c9f327febULL;
-  static const uint64_t static_value2 = 0x1ef5334e88afc6aeULL;
+  static const uint64_t static_value1 = 0x9d78cd3dd34909f2ULL;
+  static const uint64_t static_value2 = 0x879f340cd9e32ba3ULL;
 };
 
 template<class ContainerAllocator>
@@ -103,7 +103,7 @@ struct Definition< ::face_rec::faceData_<ContainerAllocator> > {
     return "  int32 id\n\
   int32 x\n\
   int32 y\n\
-  float32 radius\n\
+  int32 radius\n\
 \n\
 ";
   }
@@ -152,7 +152,7 @@ struct Printer< ::face_rec::faceData_<ContainerAllocator> >
     s << indent << "y: ";
     Printer<int32_t>::stream(s, indent + "  ", v.y);
     s << indent << "radius: ";
-    Printer<float>::stream(s, indent + "  ", v.radius);
+    Printer<int32_t>::stream(s, indent + "  ", v.radius);
   }
 };
 

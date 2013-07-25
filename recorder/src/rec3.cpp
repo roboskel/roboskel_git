@@ -17,6 +17,7 @@
 #include <opencv2/features2d/features2d.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
 #include "std_msgs/Float64MultiArray.h"
+#include "std_msgs/Float64.h"
 #include <sys/time.h>
 #include <chrono>
 #include <ctime>
@@ -40,7 +41,7 @@ double seconds2=0;
 std::chrono::time_point<std::chrono::system_clock> p1, p2;
 ros::Time rgb_cur_time, rgb_last_time;
 ros::Time depth_cur_time, depth_last_time;
-
+ros::Time total_cur_time, total_time;
  std::string path ="image_";
  std::string path2 ="depth_";
  std::string png = ".png";
@@ -77,7 +78,17 @@ DepthInfo()
 }
 void imageCb(const sensor_msgs::ImageConstPtr & msg)
 {	
-	if(REC==1){
+
+	if(REC==1)
+	{
+	//TIME INTERVAL STUFF	
+	total_cur_time=ros::Time::now();
+	if(((total_cur_time.toSec())-(total_time.toSec()))>=120)
+	{
+			REC=0;
+			ros::shutdown();
+	}
+		
 				printf("IN RGB LOOP\n");
                 rgb_cur_time = ros::Time::now();
                 seconds=(rgb_cur_time.toSec())-(rgb_last_time.toSec());
@@ -202,17 +213,37 @@ void depthInfoCb(const sensor_msgs::ImageConstPtr & msg)
 
 void chatterCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 {
-    int start = msg->data[11]; //START gia na 3ekinhsei to record
+    float start = msg->data[11]; //START gia na 3ekinhsei to record
     int cancel = msg->data[4]; //X gia na stamathsei
     //printf("Press Start to Start Recording \n");
     if (start==1)
     {	
 		//printf("Started Recording Skeleton\n");
         REC = 1;
-        ros::Duration(1).sleep();
+        ros::Duration(0.5).sleep();
 
     }
     else if ((REC==1)&&(cancel==1))
+    {
+        REC = 0;
+        //printf("Stopped Recording Skeleton \n");
+		ros::shutdown();
+    }
+}
+
+void callback(const std_msgs::Float64::ConstPtr& msg)
+{
+    float start = msg->data; //START gia na 3ekinhsei to record
+		//X gia na stamathsei
+    //printf("Press Start to Start Recording \n");
+    if (start==1)
+    {	
+		//printf("Started Recording Skeleton\n");
+        REC = 1;
+       //ros::Duration(1).sleep();
+
+    }
+    else if ((REC==1)&&(start==0))
     {
         REC = 0;
         //printf("Stopped Recording Skeleton \n");
@@ -228,12 +259,13 @@ int main(int argc, char** argv)
    
     rgb_last_time = ros::Time::now();
     depth_last_time = ros::Time::now();
-    
+    total_time = ros::Time::now();
 	gettimeofday(&start1, NULL);
 	gettimeofday(&start2, NULL);
 	         
     printf("Waiting gamepad Input\n");
-    gp_in =n.subscribe("gp_functions", 1, chatterCallback);
+    //gp_in =n.subscribe("gp_functions", 1, chatterCallback);
+    gp_in =n.subscribe("coms",5,callback);
     DepthInfo ic;
     while (ros::ok())
     {

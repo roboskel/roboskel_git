@@ -6,17 +6,17 @@ import struct
 
 
 class faceData(genpy.Message):
-  _md5sum = "d37c535c9f327feb1ef5334e88afc6ae"
+  _md5sum = "9d78cd3dd34909f2879f340cd9e32ba3"
   _type = "face_rec/faceData"
   _has_header = False #flag to mark the presence of a Header object
   _full_text = """  int32 id
   int32 x
   int32 y
-  float32 radius
+  int32 radius
 
 """
   __slots__ = ['id','x','y','radius']
-  _slot_types = ['int32','int32','int32','float32']
+  _slot_types = ['int32','int32','int32','int32']
 
   def __init__(self, *args, **kwds):
     """
@@ -42,12 +42,12 @@ class faceData(genpy.Message):
       if self.y is None:
         self.y = 0
       if self.radius is None:
-        self.radius = 0.
+        self.radius = 0
     else:
       self.id = 0
       self.x = 0
       self.y = 0
-      self.radius = 0.
+      self.radius = 0
 
   def _get_types(self):
     """
@@ -62,7 +62,7 @@ class faceData(genpy.Message):
     """
     try:
       _x = self
-      buff.write(_struct_3if.pack(_x.id, _x.x, _x.y, _x.radius))
+      buff.write(_struct_4i.pack(_x.id, _x.x, _x.y, _x.radius))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -76,7 +76,7 @@ class faceData(genpy.Message):
       _x = self
       start = end
       end += 16
-      (_x.id, _x.x, _x.y, _x.radius,) = _struct_3if.unpack(str[start:end])
+      (_x.id, _x.x, _x.y, _x.radius,) = _struct_4i.unpack(str[start:end])
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
@@ -90,7 +90,7 @@ class faceData(genpy.Message):
     """
     try:
       _x = self
-      buff.write(_struct_3if.pack(_x.id, _x.x, _x.y, _x.radius))
+      buff.write(_struct_4i.pack(_x.id, _x.x, _x.y, _x.radius))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -105,10 +105,10 @@ class faceData(genpy.Message):
       _x = self
       start = end
       end += 16
-      (_x.id, _x.x, _x.y, _x.radius,) = _struct_3if.unpack(str[start:end])
+      (_x.id, _x.x, _x.y, _x.radius,) = _struct_4i.unpack(str[start:end])
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e) #most likely buffer underfill
 
 _struct_I = genpy.struct_I
-_struct_3if = struct.Struct("<3if")
+_struct_4i = struct.Struct("<4i")

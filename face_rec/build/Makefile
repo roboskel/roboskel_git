@@ -161,6 +161,19 @@ ROSBUILD_gensrv_lisp/fast:
 .PHONY : ROSBUILD_gensrv_lisp/fast
 
 #=============================================================================
+# Target rules for targets named cap_img
+
+# Build rule for target.
+cap_img: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 cap_img
+.PHONY : cap_img
+
+# fast build rule for target.
+cap_img/fast:
+	$(MAKE) -f CMakeFiles/cap_img.dir/build.make CMakeFiles/cap_img.dir/build
+.PHONY : cap_img/fast
+
+#=============================================================================
 # Target rules for targets named clean-test-results
 
 # Build rule for target.
@@ -185,6 +198,19 @@ face_rec: cmake_check_build_system
 face_rec/fast:
 	$(MAKE) -f CMakeFiles/face_rec.dir/build.make CMakeFiles/face_rec.dir/build
 .PHONY : face_rec/fast
+
+#=============================================================================
+# Target rules for targets named face_rec_2
+
+# Build rule for target.
+face_rec_2: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 face_rec_2
+.PHONY : face_rec_2
+
+# fast build rule for target.
+face_rec_2/fast:
+	$(MAKE) -f CMakeFiles/face_rec_2.dir/build.make CMakeFiles/face_rec_2.dir/build
+.PHONY : face_rec_2/fast
 
 #=============================================================================
 # Target rules for targets named rosbuild_precompile
@@ -330,6 +356,21 @@ tests/fast:
 .PHONY : tests/fast
 
 # target to build an object file
+src/cap_img.o:
+	$(MAKE) -f CMakeFiles/cap_img.dir/build.make CMakeFiles/cap_img.dir/src/cap_img.o
+.PHONY : src/cap_img.o
+
+# target to preprocess a source file
+src/cap_img.i:
+	$(MAKE) -f CMakeFiles/cap_img.dir/build.make CMakeFiles/cap_img.dir/src/cap_img.i
+.PHONY : src/cap_img.i
+
+# target to generate assembly for a file
+src/cap_img.s:
+	$(MAKE) -f CMakeFiles/cap_img.dir/build.make CMakeFiles/cap_img.dir/src/cap_img.s
+.PHONY : src/cap_img.s
+
+# target to build an object file
 src/face_rec.o:
 	$(MAKE) -f CMakeFiles/face_rec.dir/build.make CMakeFiles/face_rec.dir/src/face_rec.o
 .PHONY : src/face_rec.o
@@ -344,6 +385,21 @@ src/face_rec.s:
 	$(MAKE) -f CMakeFiles/face_rec.dir/build.make CMakeFiles/face_rec.dir/src/face_rec.s
 .PHONY : src/face_rec.s
 
+# target to build an object file
+src/face_rec_2.o:
+	$(MAKE) -f CMakeFiles/face_rec_2.dir/build.make CMakeFiles/face_rec_2.dir/src/face_rec_2.o
+.PHONY : src/face_rec_2.o
+
+# target to preprocess a source file
+src/face_rec_2.i:
+	$(MAKE) -f CMakeFiles/face_rec_2.dir/build.make CMakeFiles/face_rec_2.dir/src/face_rec_2.i
+.PHONY : src/face_rec_2.i
+
+# target to generate assembly for a file
+src/face_rec_2.s:
+	$(MAKE) -f CMakeFiles/face_rec_2.dir/build.make CMakeFiles/face_rec_2.dir/src/face_rec_2.s
+.PHONY : src/face_rec_2.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -355,9 +411,11 @@ help:
 	@echo "... ROSBUILD_genmsg_py"
 	@echo "... ROSBUILD_gensrv_cpp"
 	@echo "... ROSBUILD_gensrv_lisp"
+	@echo "... cap_img"
 	@echo "... clean-test-results"
 	@echo "... edit_cache"
 	@echo "... face_rec"
+	@echo "... face_rec_2"
 	@echo "... rebuild_cache"
 	@echo "... rosbuild_precompile"
 	@echo "... rosbuild_premsgsrvgen"
@@ -370,9 +428,15 @@ help:
 	@echo "... test-results"
 	@echo "... test-results-run"
 	@echo "... tests"
+	@echo "... src/cap_img.o"
+	@echo "... src/cap_img.i"
+	@echo "... src/cap_img.s"
 	@echo "... src/face_rec.o"
 	@echo "... src/face_rec.i"
 	@echo "... src/face_rec.s"
+	@echo "... src/face_rec_2.o"
+	@echo "... src/face_rec_2.i"
+	@echo "... src/face_rec_2.s"
 .PHONY : help
 
 

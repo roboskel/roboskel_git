@@ -80,16 +80,16 @@
   "face_rec/faceDataArray")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql '<faceDataArray>)))
   "Returns md5sum for a message object of type '<faceDataArray>"
-  "ea2fd606988b2ff49ed26c5c6c737612")
+  "5eda7794b71ef213bb4e6063a4a0d838")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql 'faceDataArray)))
   "Returns md5sum for a message object of type 'faceDataArray"
-  "ea2fd606988b2ff49ed26c5c6c737612")
+  "5eda7794b71ef213bb4e6063a4a0d838")
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql '<faceDataArray>)))
   "Returns full string definition for message of type '<faceDataArray>"
-  (cl:format cl:nil "  faceData[] faces~%  int32 total~%~%================================================================================~%MSG: face_rec/faceData~%  int32 id~%  int32 x~%  int32 y~%  float32 radius~%~%~%"))
+  (cl:format cl:nil "  faceData[] faces~%  int32 total~%~%================================================================================~%MSG: face_rec/faceData~%  int32 id~%  int32 x~%  int32 y~%  int32 radius~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql 'faceDataArray)))
   "Returns full string definition for message of type 'faceDataArray"
-  (cl:format cl:nil "  faceData[] faces~%  int32 total~%~%================================================================================~%MSG: face_rec/faceData~%  int32 id~%  int32 x~%  int32 y~%  float32 radius~%~%~%"))
+  (cl:format cl:nil "  faceData[] faces~%  int32 total~%~%================================================================================~%MSG: face_rec/faceData~%  int32 id~%  int32 x~%  int32 y~%  int32 radius~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:serialization-length ((msg <faceDataArray>))
   (cl:+ 0
      4 (cl:reduce #'cl:+ (cl:slot-value msg 'faces) :key #'(cl:lambda (ele) (cl:declare (cl:ignorable ele)) (cl:+ (roslisp-msg-protocol:serialization-length ele))))
