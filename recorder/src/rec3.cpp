@@ -83,7 +83,7 @@ void imageCb(const sensor_msgs::ImageConstPtr & msg)
 	{
 	//TIME INTERVAL STUFF	
 	total_cur_time=ros::Time::now();
-	if(((total_cur_time.toSec())-(total_time.toSec()))>=120)
+	if(((total_cur_time.toSec())-(total_time.toSec()))>=10000)
 	{
 			REC=0;
 			ros::shutdown();
@@ -220,6 +220,7 @@ void chatterCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
     {	
 		//printf("Started Recording Skeleton\n");
         REC = 1;
+        total_time = ros::Time::now();
         ros::Duration(0.5).sleep();
 
     }
@@ -233,6 +234,8 @@ void chatterCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 
 void callback(const std_msgs::Float64::ConstPtr& msg)
 {
+	        total_time = ros::Time::now();
+
     float start = msg->data; //START gia na 3ekinhsei to record
 		//X gia na stamathsei
     //printf("Press Start to Start Recording \n");
@@ -259,7 +262,6 @@ int main(int argc, char** argv)
    
     rgb_last_time = ros::Time::now();
     depth_last_time = ros::Time::now();
-    total_time = ros::Time::now();
 	gettimeofday(&start1, NULL);
 	gettimeofday(&start2, NULL);
 	         

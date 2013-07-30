@@ -44,7 +44,7 @@ void hok_cb(const sensor_msgs::LaserScan::ConstPtr& scan)
 	{	
 	//TIME INTERVAL STUFF	
 		total_cur_time=ros::Time::now();
-		if(((total_cur_time.toSec())-(total_time.toSec()))>=10000)
+		if(((total_cur_time.toSec())-(total_time.toSec()))>=350)
 		{
 			float seconds_ = (total_cur_time.toSec())-(total_time.toSec());
 			printf("sasfasf %f\n",seconds_);
