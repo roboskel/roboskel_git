@@ -53,7 +53,7 @@ int main( int argc, char** argv )
 			msg2.data=1;
 			gp_out.publish(msg2);
 			addr_out.publish(msg);
-			ros::Duration(0.1).sleep();
+			ros::Duration(0.2).sleep();
 			ros::spinOnce();
 		}
 	}

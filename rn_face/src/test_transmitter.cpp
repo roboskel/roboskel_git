@@ -120,7 +120,7 @@ void callback(const std_msgs::Float64::ConstPtr& msg, FILE* ofile)
 							counter=0;
 							break;
 							//skel_dat.publish(head_ar);
-							ros::Duration(0.1).sleep();
+							ros::Duration(0.2).sleep();
 							ROS_INFO("Counter : %d ",counter);
 						}
 					}
