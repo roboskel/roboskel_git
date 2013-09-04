@@ -52,8 +52,7 @@ struct face {
 	int r;
 	face():fid(0),x(0),y(0),r(0){}
 };
-//face *Faces;
-//face Faces[10];
+
 struct rgb_map
 {
 	int rgb_ar[10][3];
@@ -81,7 +80,6 @@ struct kinect_mesg
 rgb_map rgb_map_;
 const int uid = 10;
 const int rgbval = 3;
-//int rgb_map[uid][rgbval];
 
 int NO_FACES = 1;
 int SPEAKER_ID = -1;
@@ -170,103 +168,7 @@ CvScalar hsv2rgb( float hue ){
 
 
 
-face* detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& nestedCascade, 
-//void detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& nestedCascade, 
-		double scale){
-	
-	
-	face Proswpa[10];
-	char string_faces[20];
-    int i = 0;
-    double t = 0;
-    vector<Rect> faces;
-	
-    const static Scalar colors[] =  { CV_RGB(0,0,255),
-        CV_RGB(0,128,255),
-        CV_RGB(0,255,255),
-        CV_RGB(0,255,0),
-        CV_RGB(255,128,0),
-        CV_RGB(255,255,0),
-        CV_RGB(255,0,0),
-        CV_RGB(255,0,255)} ;
-    Mat gray, smallImg( cvRound (img.rows/scale), cvRound(img.cols/scale), CV_8UC1 );
-	
-	
-    cvtColor( img, gray, CV_BGR2GRAY );
-    resize( gray, smallImg, smallImg.size(), 0, 0, INTER_LINEAR );
-    equalizeHist( smallImg, smallImg );
-    t = (double)cvGetTickCount();
-	//|CV_HAAR_FIND_BIGGEST_OBJECT
-	//|CV_HAAR_DO_ROUGH_SEARCH
-    cascade.detectMultiScale( smallImg, faces,1.1, 2, 0|CV_HAAR_SCALE_IMAGE,Size(30, 30) );
-	
-    t = (double)cvGetTickCount() - t;
-    printf( "detection time = %g ms\n", t/((double)cvGetTickFrequency()*1000.) );
-	
-    for( vector<Rect>::const_iterator r = faces.begin(); r != faces.end(); r++,i++/*, i++*/ )
-    {
-		if(i==NO_FACES){break;}
-        Mat smallImgROI;
-        vector<Rect> nestedObjects;
-        Point center;
-        Scalar color = colors[i%8];
-        int radius;
-        center.x = cvRound((r->x + r->width*0.5)*scale);
-        center.y = cvRound((r->y + r->height*0.5)*scale);
-        radius = cvRound((r->width + r->height)*0.25*scale);
-        printf("///////////////\n");
-        printf("%d   %d   %d\n",center.x, center.y,radius);
-        printf("///////////////\n");
-        circle( img, center, radius, color, 3, 8, 0 );
-		//ros::Duration(5).sleep();
-		//snprintf(string_faces, sizeof(string_faces), "face_%d", i);
-		snprintf(string_faces, sizeof(string_faces), "face_%d", i+1);
-		putText(img, string_faces, center, FONT_HERSHEY_COMPLEX_SMALL, 0.8, color, 1, CV_AA);
-		if(i>=0){
-			Faces[i].fid=i;
-			Faces[i].x = center.x;
-			Faces[i].y = center.y;
-			Faces[i].r = radius;
-		}
-		/*
-		if (i==0)
-			Proswpa[i].fid = 0;
-			Proswpa[i].x = center.x;
-			Proswpa[i].y = center.y;
-			Proswpa[i].r = radius;
-			
-			Faces[i].fid = 0;
-			Faces[i].x = center.x;
-			Faces[i].y = center.y;
-			Faces[i].r = radius;
-			//
-			//printf("i=%d\n",i);
-			//printf("-----EDW EISAI #1--------\n%d %d %d %d\n\n",Faces[i].fid,Faces[i].x,Faces[i].y,Faces[i].r);
-		}
-		
-		if (i==1) {
-			Faces[i].fid = 1;
-			Faces[i].x = center.x;
-			Faces[i].y = center.y;
-			Faces[i].r = radius;
-			//printf("i=%d\n",i);
-			//printf("-----EDW EISAI #2--------\n%d %d %d %d\n\n",Faces[i].fid,Faces[i].x,Faces[i].y,Faces[i].r);
-			cvWaitKey(100);
-			cv::imshow( "Face Detection & Tracking", img );
-			sleep(2);
-			detected = 1;
-			occlusion = 1;
-			return Faces;
-		}*/
-		
-		//i++;
-  }
-	printf("Faces = %d\n",i-1);
-    cv::imshow( "Face Detection & Tracking", img );
-    
-	return /*;*/Faces;
-	
-}
+
 
 void no_faces_cb(const std_msgs::Int64::ConstPtr& msg)
 {
@@ -304,7 +206,7 @@ void skelCallback(const rn_face::head_cords_m_array::ConstPtr& msg,struct face_ 
     ROS_INFO("Y %s",face_sa[0].y);
     ROS_INFO("Z %s",face_sa[0].z);
     */
-    ros::Duration(4).sleep();
+    //ros::Duration(4).sleep();
 
 	return ;
 }
@@ -316,7 +218,8 @@ void mcb (const std_msgs::String::ConstPtr & msg)
 	if(!pew.empty())
 			{data_adr=pew;
 			ADDR_SET=1;}
-	else {data_adr="";}
+	else {data_adr="";
+			ADDR_SET=0;}
 }
 int main( int argc, char** argv )
 {	
@@ -331,10 +234,6 @@ int main( int argc, char** argv )
 	NO_FACES=2;
 	SPEAKER_ID=0;
 	//
-	face_  *face_sa = new face_[6];	
-	//printf ("%d    %d     %d",face_sa[3].vmin,face_sa[3].vmax,face_sa[3].smin);
-	//ros::Duration(10).sleep();
-	//face *Faces = new face[10];
 	int c,c2,c3;
 	int i;
 	int result;
@@ -352,9 +251,12 @@ int main( int argc, char** argv )
 	char hist_str[80];
 	char hist_str2[80];
 	const char *str_ ;
-	
-	printf("Persons Tracked : %d\n",SESSION_MAX);
-	
+	face_  *face_sa = new face_[6];
+	for (c=0;c<NO_FACES;c++)
+	{
+		face_sa[c].fid=c;
+	}
+	//printf("Persons Tracked : %d\n",SESSION_MAX);
 	//ROS
 	ros::init(argc, argv, "recorder");
     ros::NodeHandle n;
@@ -362,8 +264,6 @@ int main( int argc, char** argv )
 	no_faces = n.subscribe<std_msgs::Int64>("no_faces",1,no_faces_cb);
 	speaker_id = n.subscribe<std_msgs::Int64>("speaker_id",1,speaker_id_cb);
 	kinect_co = n.subscribe<rn_face::head_cords_m_array>("head_cords",1,boost::bind(skelCallback, _1, face_sa));
-	//im_adr = n.subscribe<std_msgs::String>("img_addr", 1, boost::bind(mainCallback, _1, face_sa));
-	//
 	im_adr = n.subscribe<std_msgs::String>("img_addr", 1, mcb);
 	//ROS
 	
@@ -372,6 +272,7 @@ int main( int argc, char** argv )
 	CvFont font;
 	cvNamedWindow("Face Detection & Tracking",1);
 	cvInitFont(&font,CV_FONT_HERSHEY_PLAIN|CV_FONT_ITALIC,1,2,2,2);
+	
 	const String scaleOpt = "--scale=";
 	size_t scaleOptLen = scaleOpt.length();
 	const String cascadeOpt = "--cascade=";
@@ -379,9 +280,12 @@ int main( int argc, char** argv )
 	const String nestedCascadeOpt = "--nested-cascade";
 	size_t nestedCascadeOptLen = nestedCascadeOpt.length();
 	//ROS_INFO("IN MAIN CALLBACK");
+	
 	String inputName;
+	
 	CascadeClassifier cascade, nestedCascade;
 	double scale = 1;
+	
 	if( !cascade.load( cascadeName ) )
 	{
 			cerr << "ERROR: Could not load classifier cascade" << endl;
@@ -403,9 +307,9 @@ int main( int argc, char** argv )
 		if ((SKEL_SET==1)&&(ADDR_SET==1))
 		{
 		//ROS_INFO("CHECKING DATA_ADDR");
-		//if(data_adr.empty()){continue;}
+		if(data_adr.empty()){continue;}
 		//ROS_INFO("CHECKED DATA_ADDR");
-		//cvNamedWindow("Face Detection & Tracking",1);
+		cvNamedWindow("Face Detection & Tracking",1);
 		for (c=0;c<NO_FACES;c++)
 		{
 			//ROS_INFO("ENTERED HIST LOOP");
@@ -456,10 +360,8 @@ int main( int argc, char** argv )
 					//ROS_INFO("#9");
 					cvZero( face_sa[c].histimg );
 					
-					
 			}
 			//ROS_INFO("INITILIAZED HUES ETC");
-
 		}
 		
 		for (c=0;c<NO_FACES;c++)
@@ -476,18 +378,13 @@ int main( int argc, char** argv )
 			//ROS_INFO("AFTER DETECT AND DRAW");
 			for(c=0;c<NO_FACES;c++)
 			{	//ROS_INFO("AFTER D&D LOOP");
-				//face_sa[c].x_=Faces[c].x;
-				//face_sa[c].y_=Faces[c].y;
-				//face_sa[c].r=Faces[c].r;
-				//face_sa[c].id_=Faces[c].fid;
 				//printf("*********\n");
 				//printf("%d   %d   %d   %d \n",Faces[c].fid,Faces[c].x,Faces[c].y,Faces[c].r);
 				//printf("*********\n");
 				face_sa[c].track_object = -1;
 				face_sa[c].selection = cvRect((Faces[c].x)-Faces[c].r,Faces[c].y-Faces[c].r, Faces[c].x+Faces[c].r,Faces[c].y+Faces[c].r);				
-				ROS_INFO("SX : %d, SY : %d",face_sa[c].selection.x, face_sa[c].selection.y);
+				//ROS_INFO("SX : %d, SY : %d",face_sa[c].selection.x, face_sa[c].selection.y);
 				cvRectangle(face_sa[0].image, cvPoint(face_sa[c].selection.x, face_sa[c].selection.y), cvPoint(face_sa[c].selection.width, face_sa[c].selection.height),
-				//cvRectangle(face_sa[0].image,cvPoint(Faces[c])
 				 CV_RGB(rgb_map_.rgb_ar[c][0],rgb_map_.rgb_ar[c][1],rgb_map_.rgb_ar[c][2]), 3, CV_AA, 0);
 			}
 			//ROS_INFO("OUTSIDE THE LOOP");
@@ -514,7 +411,8 @@ int main( int argc, char** argv )
 
 				cvSplit( face_sa[c].hsv, face_sa[c].hue, 0, 0, 0 );
 				//ROS_INFO("AFTER CV_SPLIT");
-
+				//ROS_INFO("FACE[%d].TRACK_OBJECT=%d",c,face_sa[c].track_object);
+				//ros::Duration(3).sleep();
 				if(face_sa[c].track_object<0)
 				{	
 					//ROS_INFO("IN TRACK LOOP");
@@ -540,15 +438,17 @@ int main( int argc, char** argv )
 					face_sa[c].track_object = 1;
 					cvZero( face_sa[c].histimg );
 					face_sa[c].bin_w = face_sa[c].histimg->width / face_sa[c].hdims;
+				
 					//ROS_INFO("BEFORE HDIMS LOOP");
-					for( i = 0; i < face_sa[c].hdims; i++ )
-					{	//ROS_INFO("IN HDIMS LOOP");
-						val = cvRound( cvGetReal1D(face_sa[c].hist->bins,i)*face_sa[c].histimg->height/255 );
-						//ROS_INFO("CVSCALAR");
-						CvScalar color = hsv2rgb(i*180.f/face_sa[c].hdims);
-						//ROS_INFO("CVRECT");
-						cvRectangle( face_sa[c].histimg, cvPoint(i*face_sa[c].bin_w,face_sa[c].histimg->height), cvPoint((i+1)*face_sa[c].bin_w,face_sa[c].histimg->height - val), color, -1, 8, 0 );
-					}
+						for( i = 0; i < face_sa[c].hdims; i++ )
+						{	//ROS_INFO("IN HDIMS LOOP");
+							val = cvRound( cvGetReal1D(face_sa[c].hist->bins,i)*face_sa[c].histimg->height/255 );
+							//ROS_INFO("CVSCALAR");
+							CvScalar color = hsv2rgb(i*180.f/face_sa[c].hdims);
+							//ROS_INFO("CVRECT");
+							cvRectangle( face_sa[c].histimg, cvPoint(i*face_sa[c].bin_w,face_sa[c].histimg->height), cvPoint((i+1)*face_sa[c].bin_w,face_sa[c].histimg->height - val), color, -1, 8, 0 );
+						}
+				}
 					//ROS_INFO("LEFT HDIMS LOOP");
 					//printf("\n\nCamshift1\n\n");
 					cvCalcBackProject( &face_sa[c].hue, face_sa[c].backproject, face_sa[c].hist ); //Calculates the back projection. --> ypologizei to kentro mazas me bash ta barh
@@ -563,7 +463,8 @@ int main( int argc, char** argv )
 					if( !face_sa[c].image->origin ){
 						face_sa[c].track_box.angle = -face_sa[c].track_box.angle; // CvBox2D - track_box
 					}
-					
+					//ROS_INFO("EDW ZVGRAFIZOYME");
+					//ros::Duration(3).sleep();
 					cvEllipseBox( face_sa[0].image, face_sa[c].track_box, 
 					CV_RGB(rgb_map_.rgb_ar[c][0],rgb_map_.rgb_ar[c][1],rgb_map_.rgb_ar[c][2]), 3, CV_AA, 0 );
 					//CV_RGB(255,0,0), 3, CV_AA, 0 );
@@ -574,6 +475,7 @@ int main( int argc, char** argv )
 					//sscanf(line, "%s %s %s %s %s", &face_sa[c].number, &face_sa[c].id, &face_sa[c].x, &face_sa[c].y, &face_sa[c].z);
 					printf("%s \t %s -->\t %s \t %s \t %s \n", face_sa[c].number, face_sa[c].id, face_sa[c].x, face_sa[c].y, face_sa[c].z);
 					/*
+					
 					if(c==0)
 					{
 						//displaying=1;
@@ -650,14 +552,14 @@ int main( int argc, char** argv )
 							}
 						}
 					}	
-					}
+					
 					}	
 				
 					for(c=0;c<NO_FACES;c++)
 					{
 						printf("\nhead_stick %d = %g",c+1,face_sa[c].head_stick);
-						printf("\n0_face_id=%d\n",face_sa[c].id_);
-						sprintf(string_faces, "face_%d", face_sa[c].id_ );
+						printf("\n0_face_id=%d\n",Faces[c].fid/*face_sa[c].id_*/);
+						sprintf(string_faces, "face_%d", Faces[c].fid/*face_sa[c].id_*/ );
 						//ROS_INFO("%d %d %d",face_sa[c].track_window.x,face_sa[c].track_window.y);
 						cvPutText(face_sa[0].image,string_faces,cvPoint(face_sa[c].track_window.x+50,face_sa[c].track_window.y+50),&font, CV_RGB(255,0,0));
 						printf("\ntrack_box.center.y = %f\n",face_sa[c].track_box.center.y);
@@ -726,4 +628,120 @@ int main( int argc, char** argv )
 	
     cvDestroyWindow("Face Detection & Tracking");
 	return 0;
+}
+
+face* detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& nestedCascade, 
+//void detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& nestedCascade, 
+		double scale){
+	
+	
+	face Proswpa[10];
+	char string_faces[20];
+    int i = 0;
+    double t = 0;
+    vector<Rect> faces;
+	
+    const static Scalar colors[] =  { CV_RGB(0,0,255),
+        CV_RGB(0,128,255),
+        CV_RGB(0,255,255),
+        CV_RGB(0,255,0),
+        CV_RGB(255,128,0),
+        CV_RGB(255,255,0),
+        CV_RGB(255,0,0),
+        CV_RGB(255,0,255)} ;
+    Mat gray, smallImg( cvRound (img.rows/scale), cvRound(img.cols/scale), CV_8UC1 );
+	
+	
+    cvtColor( img, gray, CV_BGR2GRAY );
+    resize( gray, smallImg, smallImg.size(), 0, 0, INTER_LINEAR );
+    equalizeHist( smallImg, smallImg );
+    t = (double)cvGetTickCount();
+	//|CV_HAAR_FIND_BIGGEST_OBJECT
+	//|CV_HAAR_DO_ROUGH_SEARCH
+    cascade.detectMultiScale( smallImg, faces,1.1, 2, 0|CV_HAAR_SCALE_IMAGE,Size(30, 30) );
+	
+    t = (double)cvGetTickCount() - t;
+    printf( "detection time = %g ms\n", t/((double)cvGetTickFrequency()*1000.) );
+	
+    for( vector<Rect>::const_iterator r = faces.begin(); r != faces.end(); r++,i++/*, i++*/ )
+    {
+		
+        Mat smallImgROI;
+        vector<Rect> nestedObjects;
+        Point center;
+        Scalar color = colors[i%8];
+        int radius;
+        center.x = cvRound((r->x + r->width*0.5)*scale);
+        center.y = cvRound((r->y + r->height*0.5)*scale);
+        radius = cvRound((r->width + r->height)*0.25*scale);
+        /*
+        printf("///////////////\n");
+        printf("%d   %d   %d\n",center.x, center.y,radius);
+        printf("///////////////\n");
+        circle( img, center, radius, color, 3, 8, 0 );
+        */
+		//ros::Duration(5).sleep();
+		//snprintf(string_faces, sizeof(string_faces), "face_%d", i);
+		snprintf(string_faces, sizeof(string_faces), "face_%d", i+1);
+		putText(img, string_faces, center, FONT_HERSHEY_COMPLEX_SMALL, 0.8, color, 1, CV_AA);
+		if(i>=0){
+			Faces[i].fid=i;
+			Faces[i].x = center.x;
+			Faces[i].y = center.y;
+			Faces[i].r = radius;
+			printf("-------------\n%d %d %d %d\n\n",Proswpa[i].fid,Proswpa[i].x,Proswpa[i].y,Proswpa[i].r);
+
+		}
+		if(i==NO_FACES-1){
+			printf("-------------\n%d %d %d %d\n\n",Proswpa[i].fid,Proswpa[i].x,Proswpa[i].y,Proswpa[i].r);
+			cvWaitKey(100);
+			cv::imshow( "Face Detection & Tracking", img );
+			sleep(2);
+			detected = 1;
+			occlusion = 1;
+			return Proswpa;}
+			
+		/*
+		if (i==0)
+		{
+			Proswpa[i].fid = 0;
+			Proswpa[i].x = center.x;
+			Proswpa[i].y = center.y;
+			Proswpa[i].r = radius;
+			
+			Faces[i].fid = 0;
+			Faces[i].x = center.x;
+			Faces[i].y = center.y;
+			Faces[i].r = radius;
+			//
+			//printf("i=%d\n",i);
+			printf("-----EDW EISAI #1--------\n%d %d %d %d\n\n",Faces[i].fid,Faces[i].x,Faces[i].y,Faces[i].r);
+		}
+		if (i==1) 
+		{
+			Faces[i].fid = 1;
+			Faces[i].x = center.x;
+			Faces[i].y = center.y;
+			Faces[i].r = radius;
+			//printf("i=%d\n",i);
+			printf("-----EDW EISAI #2--------\n%d %d %d %d\n\n",Faces[i].fid,Faces[i].x,Faces[i].y,Faces[i].r);
+			cvWaitKey(100);
+			cv::imshow( "Face Detection & Tracking", img );
+			sleep(2);
+			detected = 1;
+			occlusion = 1;
+			return Faces;
+		}
+		*/
+	}
+		
+		
+		
+		//i++;
+  
+	printf("Faces = %d\n",i-1);
+    cv::imshow( "Face Detection & Tracking", img );
+    
+	return /*;*/Faces;
+
 }
