@@ -33,6 +33,7 @@
 #include "std_msgs/Float64MultiArray.h"
 #include "std_msgs/String.h"
 #include "std_msgs/Int64.h"
+#include "std_msgs/Int32.h"
 #include "rn_face/head_cords_m.h"
 #include "rn_face/head_cords_m_array.h"
 
@@ -87,6 +88,9 @@ int MAX_PERSONS = 6;
 int SESSION_MAX = 0;
 int SKEL_SET = 0 ;
 int ADDR_SET = 0 ;
+int DOMINANT_ID = 0;
+double DMAX = 0 ;
+double DTEMP = 0 ;
 int detected = 0;
 int flashing = 1 ;
 int occlusion = 1;
@@ -259,11 +263,13 @@ int main( int argc, char** argv )
 	//ROS
 	ros::init(argc, argv, "recorder");
     ros::NodeHandle n;
+	ros::Publisher dom_id;
 	ros::Subscriber no_faces,im_adr,speaker_id,kinect_co;
 	no_faces = n.subscribe<std_msgs::Int64>("no_faces",1,no_faces_cb);
 	speaker_id = n.subscribe<std_msgs::Int64>("speaker_id",1,speaker_id_cb);
 	kinect_co = n.subscribe<rn_face::head_cords_m_array>("head_cords",1,boost::bind(skelCallback, _1, face_sa));
 	im_adr = n.subscribe<std_msgs::String>("img_addr", 1, mcb);
+	std_msgs::Int32 dom_id_msg;
 	//ROS
 	
 	//OPENCV.Mat frame, frameCopy;
@@ -461,6 +467,12 @@ int main( int argc, char** argv )
 					}
 					//ROS_INFO("EDW ZVGRAFIZOYME");
 					//ros::Duration(3).sleep();
+					DTEMP=(face_sa[c].track_box.size.height*face_sa[c].track_box.size.width);
+					if (DTEMP>DMAX)
+					{
+						DMAX=DTEMP;
+						DOMINANT_ID=c;
+					}
 					if(SPEAKER_ID==c)
 					{	
 						if(flashing==1)
@@ -632,7 +644,8 @@ int main( int argc, char** argv )
 	//ROS_INFO("STILL INSIDE LOOP");
 	}
 	        
-	
+	dom_id_msg.data=c;
+	dom_id.publish(dom_id_msg);
     cvDestroyWindow("Face Detection & Tracking");
 	return 0;
 }
