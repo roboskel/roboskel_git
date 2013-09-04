@@ -82,14 +82,13 @@ const int uid = 10;
 const int rgbval = 3;
 
 int NO_FACES = 1;
-int SPEAKER_ID = -1;
+int SPEAKER_ID = 1;
 int MAX_PERSONS = 6;
 int SESSION_MAX = 0;
 int SKEL_SET = 0 ;
 int ADDR_SET = 0 ;
 int detected = 0;
-int flash = 0 ;
-int displaying =0;
+int flashing = 1 ;
 int occlusion = 1;
 int count_occlusion = 0;
 
@@ -403,9 +402,6 @@ int main( int argc, char** argv )
 				_vmin[c]=face_sa[c].vmin;
 				_vmax[c]=face_sa[c].vmax;
 				//ROS_INFO("BEFORE CV_INRANGES");
-				//cvInRangeS( face_sa[c].hsv, cvScalar(0,face_sa[c].smin,MIN(_vmin[c],_vmax[c]),0),cvScalar(180,256,MAX(_vmin[c],_vmax[c]),0), face_sa[c].mask );
-				//cvInRangeS( face_sa[c].hsv, cvScalar(0,face_sa[c].smin,MIN(face_sa[c].vmin,face_sa[c].vmax),0),
-				//cvScalar(180,256,MAX(face_sa[c].vmin,face_sa[c].vmax),0), face_sa[c].mask );
 				cvInRangeS( face_sa[c].hsv, cvScalar(0,face_sa[c].smin,MIN(_vmin[c],_vmax[c]),0),
 				cvScalar(180,256,MAX(_vmin[c],_vmax[c]),0), face_sa[c].mask );
 
@@ -465,13 +461,24 @@ int main( int argc, char** argv )
 					}
 					//ROS_INFO("EDW ZVGRAFIZOYME");
 					//ros::Duration(3).sleep();
-					cvEllipseBox( face_sa[0].image, face_sa[c].track_box, 
-					CV_RGB(rgb_map_.rgb_ar[c][0],rgb_map_.rgb_ar[c][1],rgb_map_.rgb_ar[c][2]), 3, CV_AA, 0 );
-					//CV_RGB(255,0,0), 3, CV_AA, 0 );
-					//cvCircle(image, track_box, 100 , CV_RGB(255,255,0), 1, CV_AA, 0 );
-					//cvEllipse( face_sa[0].image, cvPoint(273, 100), cvSize(20,35), 0, 0, 360, CV_RGB(255,255,0), -1, 8, 0 );
-					//fgets(line, sizeof(line), file);
-					
+					if(SPEAKER_ID==c)
+					{	
+						if(flashing==1)
+						{
+							cvEllipseBox( face_sa[0].image, face_sa[c].track_box, 
+							CV_RGB(rgb_map_.rgb_ar[c][0],rgb_map_.rgb_ar[c][1],rgb_map_.rgb_ar[c][2]), 3, CV_AA, 0 );
+							flashing=-flashing;
+						}
+						else
+						{
+							flashing=-flashing;
+						}
+					}
+					else
+					{	
+						cvEllipseBox( face_sa[0].image, face_sa[c].track_box, 
+						CV_RGB(rgb_map_.rgb_ar[c][0],rgb_map_.rgb_ar[c][1],rgb_map_.rgb_ar[c][2]), 3, CV_AA, 0 );
+					}
 					//sscanf(line, "%s %s %s %s %s", &face_sa[c].number, &face_sa[c].id, &face_sa[c].x, &face_sa[c].y, &face_sa[c].z);
 					printf("%s \t %s -->\t %s \t %s \t %s \n", face_sa[c].number, face_sa[c].id, face_sa[c].x, face_sa[c].y, face_sa[c].z);
 					/*
@@ -557,7 +564,7 @@ int main( int argc, char** argv )
 				
 					for(c=0;c<NO_FACES;c++)
 					{
-						printf("\nhead_stick %d = %g",c+1,face_sa[c].head_stick);
+						printf("\nhead_stick %d = %g",c,face_sa[c].head_stick);
 						printf("\n0_face_id=%d\n",Faces[c].fid/*face_sa[c].id_*/);
 						sprintf(string_faces, "face_%d", Faces[c].fid/*face_sa[c].id_*/ );
 						//ROS_INFO("%d %d %d",face_sa[c].track_window.x,face_sa[c].track_window.y);
