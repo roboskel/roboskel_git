@@ -58,7 +58,7 @@ struct head_cords
 				x_prev({0,0,0,0,0,0}),
 				y_prev({0,0,0,0,0,0}),
 				z_prev({0,0,0,0,0,0}){}
-};
+}heads;
 
 void callback(const std_msgs::Float64::ConstPtr& msg)
 {
@@ -81,91 +81,113 @@ void callback(const std_msgs::Float64::ConstPtr& msg)
 }
 
 
+
 int main (int argc, char** argv)
 {	
 	ros::init(argc, argv, "head_cords_recorder");
 	ros::NodeHandle node;
 	ros::Subscriber gp_in;
-	ros::Publisher skel_dat;
-	gp_in =node.subscribe("coms",5,callback);
-	skel_dat = node.advertise<rn_face::head_cords_m>("head_cords",1);
-	file.open ("./_skel2.data", ios::out | ios::binary);
-	
+	ros::Publisher  skel_data;
 	tf::TransformListener listener;
 	tf::Vector3 origin;
 	tf::StampedTransform transform;
 	geometry_msgs::Vector3 cord;
-	ros::Rate rate(10.0);
-	
+	gp_in =node.subscribe("coms",5,callback);
+	skel_data = node.advertise<rn_face::head_cords_m_array>("head_cords",1);
+	skel_last_time = ros::Time::now();
+	rn_face::head_cords_m_array msg_ar;
+	int i ;
+	//head_cords heads ;
 	while (node.ok())
-  {
-	head_cords heads ;
-	ros::spinOnce();
-	skel_cur_time=ros::Time::now();
-	seconds=skel_cur_time.toSec()-skel_last_time.toSec();
-	if ((REC==1)&&(seconds>0.1))
-	{	
-		rn_face::head_cords_m_array msg_ar;
+	{	ROS_INFO("IN WHILE");
+		skel_cur_time=ros::Time::now();
+		seconds=skel_cur_time.toSec()-skel_last_time.toSec();
+		if ((REC==1)&&(seconds>0.1))
+		{	ROS_INFO("BEFORE CALL");
+			//send_transforms(/*node*/);
+				
 		p1 = std::chrono::system_clock::now();
 		sstream2 << std::chrono::duration_cast<std::chrono::milliseconds>(p1.time_since_epoch()).count() ;
 		sstream2>>skel_ts;
-		for(int i=1;i<=6;i++)
-		{
-			sstream << i;
-			head=head+sstream.str();
-			rn_face::head_cords_m msg;
-			try{
-			  listener.lookupTransform("/openni_depth_frame", head,
-									   ros::Time(0), transform);
-				origin =transform.getOrigin();
-				heads.x[i-1]=origin.x();
-				heads.y[i-1]=origin.y();
-				heads.z[i-1]=origin.z();
-				
-				
-				file<<skel_ts<<" "<<i<<" ";
-				
-				if ((cord.x!=heads.x_prev[i-1])&&(cord.y!=heads.y_prev[i-1])&&(cord.z!=heads.z_prev[i-1]))
-				{
-					rec =1;
-					heads.x_prev[i-1] = heads.x[i-1];
-					heads.y_prev[i-1] = heads.y[i-1];
-					heads.z_prev[i-1] = heads.z[i-1];
-					file<<heads.x[i-1]<<" "<<heads.y[i-1]<<" "<<" "<<heads.z[i-1]<<" ";
-				}
-				else
-				{
-					//x=0;
-					//y=0;
-					//z=0;
-					rec=0;
-					file<<heads.x[i-1]<<" "<<heads.y[i-1]<<" "<<heads.z[i-1]<<" ";
-
-				}
-			}
-			catch (tf::TransformException ex)
-			{
-				rec=0;
-			}
-			file<<endl;
-			msg.timestamp=stol(skel_ts);
-			msg.id=i;
-			msg.x=heads.x[i-1];
-			msg.y=heads.y[i-1];
-			msg.z=heads.z[i-1];
-			msg_ar.head_co.push_back(msg);
-			head ="head_";
-			sstream.str(std::string());
-			sstream.clear();
 		
-	  }//rate.sleep();
-	  sstream2.str(std::string());
-	  sstream2.clear();
-	  skel_dat.publish(msg_ar);
-	  skel_last_time=skel_cur_time;
-	  skel_cur_time=ros::Time::now();
+			for(i=1;i<=6;i++)
+			{
+				sstream << i;
+				head=head+sstream.str();
+				std::cout << "Follow this command:" << head << endl;
+				ROS_INFO("OEOEOEOE");
+				ros::Duration(1).sleep();
+				rn_face::head_cords_m msg;
+				try{
+				  listener.lookupTransform("/openni_depth_frame", head,
+										   ros::Time(0), transform);
+					origin =transform.getOrigin();
+					heads.x[i-1]=origin.x();
+					heads.y[i-1]=origin.y();
+					heads.z[i-1]=origin.z();
+					ROS_INFO("TRY");
+					
+					//file<<skel_ts<<" "<<i<<" ";
+					
+					if ((cord.x!=heads.x_prev[i-1])&&(cord.y!=heads.y_prev[i-1])&&(cord.z!=heads.z_prev[i-1]))
+					{
+						ROS_INFO("IF");
+						rec =1;
+						heads.x_prev[i-1] = heads.x[i-1];
+						heads.y_prev[i-1] = heads.y[i-1];
+						heads.z_prev[i-1] = heads.z[i-1];
+						//file<<heads.x[i-1]<<" "<<heads.y[i-1]<<" "<<" "<<heads.z[i-1]<<" ";
+					}
+					else
+					{	ROS_INFO("ELSE");
+						heads.x[i-1]=0;
+						heads.y[i-1]=0;
+						heads.z[i-1]=0;
+						heads.x_prev[i-1]=0;
+						heads.y_prev[i-1]=0;
+						heads.z_prev[i-1]=0;
+						rec=0;
+						//file<<heads.x[i-1]<<" "<<heads.y[i-1]<<" "<<heads.z[i-1]<<" ";
+
+					}
+				}
+				catch (tf::TransformException ex)
+				{
+					ROS_INFO("CATCH");
+					rec=0;
+					//heads.fid=1337;
+					heads.x[i-1]=0;
+					heads.y[i-1]=0;
+					heads.z[i-1]=0;
+					heads.x_prev[i-1]=0;
+					heads.y_prev[i-1]=0;
+					heads.z_prev[i-1]=0;
+					
+				}
+				file<<endl;
+				msg.timestamp=stol(skel_ts);
+				msg.id=i-1;
+				msg.x=heads.x[i-1];
+				msg.y=heads.y[i-1];
+				msg.z=heads.z[i-1];
+				msg_ar.head_co.push_back(msg);
+				head ="head_";
+				sstream.str(std::string());
+				sstream.clear();
+			
+		  }
+		  skel_data.publish(msg_ar);
+		  msg_ar.head_co.clear();
+		  //msg_ar.clear();
+			ROS_INFO("AFTER CALL");
+		}
+		skel_last_time=skel_cur_time;
+		ROS_INFO("OUTSIDE LOOP");
+		skel_cur_time=ros::Time::now();
+		ros::spinOnce();
+		ROS_INFO("SPINNED");	
 	}
-}
-file.close();
+	ros::shutdown();
+//file.close();
   return 0;
 }
