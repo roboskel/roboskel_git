@@ -231,11 +231,11 @@ int main( int argc, char** argv )
     {
 		SESSION_MAX=atoi(argv[1]);
 	}
-	else {SESSION_MAX=2;}
+	else {SESSION_MAX=1;}
 	//Hardcoded gia dokimes
-	SESSION_MAX=2;
+	SESSION_MAX=6;
 	NO_FACES=2;
-	SPEAKER_ID=0;
+	SPEAKER_ID=1;
 	//
 	int c,c2,c3;
 	int i;
@@ -597,8 +597,8 @@ int main( int argc, char** argv )
 						printf("\n\nOcclusion\n\n");
 					}
 					*/
-					if(NO_FACES>1)
-					{
+					//if(NO_FACES>1)
+					//{
 						for(c=0;c<NO_FACES;c++)
 						{	
 							sprintf(hist_str2,"Histogram_%d",c+1);
@@ -606,7 +606,7 @@ int main( int argc, char** argv )
 							cvShowImage( hist_str2, face_sa[c].histimg );
 							strcpy(hist_str2,"Histogram");
 						}
-					}
+					//}
 					
 					cvWaitKey(10); // o xronos gia kathe frame
 					
@@ -712,6 +712,7 @@ face* detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& ne
 			printf("-------------\n%d %d %d %d\n\n",Proswpa[i].fid,Proswpa[i].x,Proswpa[i].y,Proswpa[i].r);
 
 		}
+		/*
 		if(i==NO_FACES-1){
 			printf("-------------\n%d %d %d %d\n\n",Proswpa[i].fid,Proswpa[i].x,Proswpa[i].y,Proswpa[i].r);
 			cvWaitKey(100);
@@ -720,6 +721,7 @@ face* detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& ne
 			detected = 1;
 			occlusion = 1;
 			return Proswpa;}
+			*/
 			
 		/*
 		if (i==0)
@@ -758,7 +760,11 @@ face* detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& ne
 		
 		
 		//i++;
-  
+	cvWaitKey(100);
+			cv::imshow( "Face Detection & Tracking", img );
+			sleep(2);
+			detected = 1;
+			occlusion = 1;
 	printf("Faces = %d\n",i-1);
     cv::imshow( "Face Detection & Tracking", img );
     
