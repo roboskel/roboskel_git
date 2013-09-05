@@ -91,7 +91,7 @@ int main (int argc, char** argv)
 	tf::TransformListener listener;
 	tf::Vector3 origin;
 	tf::StampedTransform transform;
-	geometry_msgs::Vector3 cord;
+	//geometry_msgs::Vector3 cord;
 	gp_in =node.subscribe("coms",5,callback);
 	skel_data = node.advertise<rn_face::head_cords_m_array>("head_cords",1);
 	skel_last_time = ros::Time::now();
@@ -99,7 +99,9 @@ int main (int argc, char** argv)
 	int i ;
 	//head_cords heads ;
 	while (node.ok())
-	{	ROS_INFO("IN WHILE");
+	{	
+		msg_ar.head_co.clear();
+		ROS_INFO("IN WHILE");
 		skel_cur_time=ros::Time::now();
 		seconds=skel_cur_time.toSec()-skel_last_time.toSec();
 		if ((REC==1)&&(seconds>0.1))
@@ -116,7 +118,7 @@ int main (int argc, char** argv)
 				head=head+sstream.str();
 				std::cout << "Follow this command:" << head << endl;
 				ROS_INFO("OEOEOEOE");
-				ros::Duration(1).sleep();
+				//ros::Duration(1).sleep();
 				rn_face::head_cords_m msg;
 				try{
 				  listener.lookupTransform("/openni_depth_frame", head,
@@ -128,14 +130,16 @@ int main (int argc, char** argv)
 					ROS_INFO("TRY");
 					
 					//file<<skel_ts<<" "<<i<<" ";
-					
-					if ((cord.x!=heads.x_prev[i-1])&&(cord.y!=heads.y_prev[i-1])&&(cord.z!=heads.z_prev[i-1]))
+					//ros::Duration(1).sleep();
+					//if ((cord.x!=heads.x_prev[i-1])&&(cord.y!=heads.y_prev[i-1])&&(cord.z!=heads.z_prev[i-1]))
+					if ((heads.x[i-1]!=heads.x_prev[i-1])&&(heads.y[i-1]!=heads.y_prev[i-1])&&(heads.z[i-1]!=heads.z_prev[i-1]))
 					{
 						ROS_INFO("IF");
 						rec =1;
 						heads.x_prev[i-1] = heads.x[i-1];
 						heads.y_prev[i-1] = heads.y[i-1];
 						heads.z_prev[i-1] = heads.z[i-1];
+						//ros::Duration(1).sleep();
 						//file<<heads.x[i-1]<<" "<<heads.y[i-1]<<" "<<" "<<heads.z[i-1]<<" ";
 					}
 					else
@@ -147,6 +151,7 @@ int main (int argc, char** argv)
 						heads.y_prev[i-1]=0;
 						heads.z_prev[i-1]=0;
 						rec=0;
+						//ros::Duration(1).sleep();
 						//file<<heads.x[i-1]<<" "<<heads.y[i-1]<<" "<<heads.z[i-1]<<" ";
 
 					}
@@ -154,6 +159,7 @@ int main (int argc, char** argv)
 				catch (tf::TransformException ex)
 				{
 					ROS_INFO("CATCH");
+					//ros::Duration(1).sleep();
 					rec=0;
 					//heads.fid=1337;
 					heads.x[i-1]=0;
@@ -177,7 +183,6 @@ int main (int argc, char** argv)
 			
 		  }
 		  skel_data.publish(msg_ar);
-		  msg_ar.head_co.clear();
 		  //msg_ar.clear();
 			ROS_INFO("AFTER CALL");
 		}
