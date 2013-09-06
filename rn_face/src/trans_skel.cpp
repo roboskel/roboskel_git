@@ -97,6 +97,7 @@ int main (int argc, char** argv)
 	skel_last_time = ros::Time::now();
 	rn_face::head_cords_m_array msg_ar;
 	int i ;
+	int no_faces=0;
 	//head_cords heads ;
 	while (node.ok())
 	{	
@@ -127,30 +128,31 @@ int main (int argc, char** argv)
 					heads.x[i-1]=origin.x();
 					heads.y[i-1]=origin.y();
 					heads.z[i-1]=origin.z();
-					ROS_INFO("TRY");
+					//ROS_INFO("TRY");
 					
 					//file<<skel_ts<<" "<<i<<" ";
 					//ros::Duration(1).sleep();
 					//if ((cord.x!=heads.x_prev[i-1])&&(cord.y!=heads.y_prev[i-1])&&(cord.z!=heads.z_prev[i-1]))
 					if ((heads.x[i-1]!=heads.x_prev[i-1])&&(heads.y[i-1]!=heads.y_prev[i-1])&&(heads.z[i-1]!=heads.z_prev[i-1]))
 					{
-						ROS_INFO("IF");
-						rec =1;
+						//ROS_INFO("IF");
+						//rec =1;
 						heads.x_prev[i-1] = heads.x[i-1];
 						heads.y_prev[i-1] = heads.y[i-1];
 						heads.z_prev[i-1] = heads.z[i-1];
+						no_faces++;
 						//ros::Duration(1).sleep();
 						//file<<heads.x[i-1]<<" "<<heads.y[i-1]<<" "<<" "<<heads.z[i-1]<<" ";
 					}
 					else
-					{	ROS_INFO("ELSE");
+					{	//ROS_INFO("ELSE");
 						heads.x[i-1]=0;
 						heads.y[i-1]=0;
 						heads.z[i-1]=0;
 						heads.x_prev[i-1]=0;
 						heads.y_prev[i-1]=0;
 						heads.z_prev[i-1]=0;
-						rec=0;
+						//rec=0;
 						//ros::Duration(1).sleep();
 						//file<<heads.x[i-1]<<" "<<heads.y[i-1]<<" "<<heads.z[i-1]<<" ";
 
@@ -158,9 +160,9 @@ int main (int argc, char** argv)
 				}
 				catch (tf::TransformException ex)
 				{
-					ROS_INFO("CATCH");
+					//ROS_INFO("CATCH");
 					//ros::Duration(1).sleep();
-					rec=0;
+					//rec=0;
 					//heads.fid=1337;
 					heads.x[i-1]=0;
 					heads.y[i-1]=0;
@@ -182,6 +184,7 @@ int main (int argc, char** argv)
 				sstream.clear();
 			
 		  }
+		  msg_ar.no_faces=no_faces;
 		  skel_data.publish(msg_ar);
 		  //msg_ar.clear();
 			ROS_INFO("AFTER CALL");
