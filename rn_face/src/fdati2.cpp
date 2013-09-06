@@ -95,7 +95,7 @@ int detected = 0;
 int flashing = 1 ;
 int occlusion = 1;
 int count_occlusion = 0;
-
+int temp_id;
 std::string data_adr="";
 struct face_{
 //-------------------
@@ -115,8 +115,8 @@ struct face_{
 	int id_;
 	int fid;
 	int x_,y_,z_;
-	//int occlusion ; //=0;
-	//int count_occlusion; //=1;
+	int occlusion ; //=0;
+	int count_occlusion; //=1;
 	float hranges_arr[2];// = {0,500};
 	float* hranges ;//= hranges_arr;
 	float max_val;
@@ -135,7 +135,7 @@ struct face_{
 	CvConnectedComp track_comp;
 	
 	face_():image(0),hsv(0),hue(0),mask(0),backproject(0),histimg(0),backproject_mode(0),select_object(0),track_object(0),
-	show_hist(1),hdims(42),/*occlusion(1),count_occlusion(0),*/
+	show_hist(1),hdims(42),occlusion(1),count_occlusion(0),
 	vmin(10),vmax(250),smin(30),id_(-1),fid(0),x_(0),y_(0),z_(0),
 	hranges_arr({0,500}),hranges(hranges_arr),max_val(0),head_stick(0),head_stick_before_occlusion(0){}/*head_stick({0,0}),head_stick_before_occlusion({0,0})*/
 };
@@ -386,6 +386,7 @@ int main( int argc, char** argv )
 				//printf("*********\n");
 				//printf("%d   %d   %d   %d \n",Faces[c].fid,Faces[c].x,Faces[c].y,Faces[c].r);
 				//printf("*********\n");
+				face_sa[c].occlusion = 1;
 				face_sa[c].track_object = -1;
 				face_sa[c].selection = cvRect((Faces[c].x)-Faces[c].r,Faces[c].y-Faces[c].r, Faces[c].x+Faces[c].r,Faces[c].y+Faces[c].r);				
 				//ROS_INFO("SX : %d, SY : %d",face_sa[c].selection.x, face_sa[c].selection.y);
@@ -458,11 +459,13 @@ int main( int argc, char** argv )
 					cvCamShift( face_sa[c].backproject, face_sa[c].track_window,cvTermCriteria( CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 10, 1 ), &face_sa[c].track_comp, &face_sa[c].track_box );
 					face_sa[c].track_window = face_sa[c].track_comp.rect;
 					
-					if( face_sa[c].backproject_mode ){
+					if( face_sa[c].backproject_mode )
+					{
 						cvCvtColor( face_sa[c].backproject, face_sa[0].image, CV_GRAY2BGR ); //Converts an image from one color space to another.
 					}
 					
-					if( !face_sa[c].image->origin ){
+					if( !face_sa[c].image->origin )
+					{
 						face_sa[c].track_box.angle = -face_sa[c].track_box.angle; // CvBox2D - track_box
 					}
 					//ROS_INFO("EDW ZVGRAFIZOYME");
@@ -471,14 +474,14 @@ int main( int argc, char** argv )
 					if (DTEMP>DMAX)
 					{
 						DMAX=DTEMP;
-						DOMINANT_ID=c;
+						DOMINANT_ID=c+1;
 					}
-					if(SPEAKER_ID==c)
+					if(SPEAKER_ID==Faces[c].fid-1)
 					{	
 						if(flashing==1)
 						{
 							cvEllipseBox( face_sa[0].image, face_sa[c].track_box, 
-							CV_RGB(rgb_map_.rgb_ar[c][0],rgb_map_.rgb_ar[c][1],rgb_map_.rgb_ar[c][2]), 3, CV_AA, 0 );
+							CV_RGB(rgb_map_.rgb_ar[Faces[c].fid-1][0],rgb_map_.rgb_ar[Faces[c].fid-1][1],rgb_map_.rgb_ar[Faces[c].fid-1][2]), 3, CV_AA, 0 );
 							flashing=-flashing;
 						}
 						else
@@ -489,7 +492,7 @@ int main( int argc, char** argv )
 					else
 					{	
 						cvEllipseBox( face_sa[0].image, face_sa[c].track_box, 
-						CV_RGB(rgb_map_.rgb_ar[c][0],rgb_map_.rgb_ar[c][1],rgb_map_.rgb_ar[c][2]), 3, CV_AA, 0 );
+						CV_RGB(rgb_map_.rgb_ar[Faces[c].fid-1][0],rgb_map_.rgb_ar[Faces[c].fid-1][1],rgb_map_.rgb_ar[Faces[c].fid-1][2]), 3, CV_AA, 0 );
 					}
 					//sscanf(line, "%s %s %s %s %s", &face_sa[c].number, &face_sa[c].id, &face_sa[c].x, &face_sa[c].y, &face_sa[c].z);
 					printf("%s \t %s -->\t %s \t %s \t %s \n", face_sa[c].number, face_sa[c].id, face_sa[c].x, face_sa[c].y, face_sa[c].z);
@@ -509,25 +512,41 @@ int main( int argc, char** argv )
 					{
 						if (c==0)
 						{
-							if (occlusion == 1) {
-								face_sa[c].head_stick=atof(face_sa[c].y);
-								face_sa[c+1].head_stick=atof(face_sa[c+1].y);
-								if (count_occlusion == 0) {
-									face_sa[c].head_stick_before_occlusion=face_sa[c].head_stick;
-									face_sa[c+1].head_stick_before_occlusion=face_sa[c+1].head_stick;
-								}
-								count_occlusion++;
-								occlusion = 0;
-								/*
-								if (((face_sa[c].head_stick_before_occlusion>face_sa[c+1].head_stick_before_occlusion)&&
-									(face_sa[c].head_stick>face_sa[c+1].head_stick))||
-									((face_sa[c].head_stick_before_occlusion<face_sa[c+1].head_stick_before_occlusion)&&
-									(face_sa[c].head_stick<face_sa[c+1].head_stick)))
+							if ((face_sa[0].occlusion == 1)||(face_sa[1].occlusion==1)) 
+							{
+								face_sa[0].head_stick=atof(face_sa[0].y);
+								face_sa[1].head_stick=atof(face_sa[1].y);
+								if (face_sa[0].count_occlusion == 0) 
 								{
-									face_sa[c].id=c+1;
-									face_sa[c+1].id=
+									face_sa[0].head_stick_before_occlusion=face_sa[0].head_stick;
+									face_sa[0].count_occlusion++;
+									face_sa[0].occlusion = 0;
 								}
-								* */
+								if (face_sa[1].count_occlusion == 0)
+								{
+									face_sa[1].head_stick_before_occlusion=face_sa[1].head_stick;
+									face_sa[1].count_occlusion++;
+									face_sa[1].occlusion = 0;
+								}
+								if (((face_sa[0].head_stick_before_occlusion>=face_sa[1].head_stick_before_occlusion)&&
+									(face_sa[0].head_stick>=face_sa[1].head_stick))||
+									((face_sa[0].head_stick_before_occlusion<=face_sa[1].head_stick_before_occlusion)&&
+									(face_sa[0].head_stick<=face_sa[1].head_stick)))
+								{
+									face_sa[0].id_=1;
+									face_sa[1].id_=2;
+									Faces[0].fid=1;
+									Faces[1].fid=2;
+								}
+								else 
+								{	
+									face_sa[0].id_=2;
+									face_sa[1].id_=1;
+									Faces[0].fid=2;
+									Faces[1].fid=1;
+								}
+								
+								/*
 								if (face_sa[c].head_stick_before_occlusion<0 && face_sa[c].head_stick>0) {
 									face_sa[c].fid=c+1;
 									face_sa[c+1].fid = c+2;
@@ -539,35 +558,104 @@ int main( int argc, char** argv )
 									face_sa[c].id_=c;
 									face_sa[c+1].id_= c+1;
 								}
+								*/
 								
 							}
 						}
 						
 						else if (c==(NO_FACES-1))
 						{
-							if (occlusion == 1) 
+							if ((face_sa[c].occlusion == 1)||(face_sa[c-1].occlusion==1)) 
 							{
 								face_sa[c].head_stick=atof(face_sa[c].y);
+								face_sa[c-1].head_stick=atof(face_sa[c-1].y);
+								if (face_sa[c].count_occlusion == 0) 
+								{
+									face_sa[c].head_stick_before_occlusion=face_sa[c].head_stick;
+									face_sa[c].count_occlusion++;
+									face_sa[c].occlusion = 0;
+								}
+								if (face_sa[c-1].count_occlusion == 0) 
+								{
+									face_sa[c-1].head_stick_before_occlusion=face_sa[c-1].head_stick;
+									face_sa[c-1].count_occlusion++;
+									face_sa[c-1].occlusion = 0;
+								}
+								if (((face_sa[c].head_stick_before_occlusion>face_sa[c-1].head_stick_before_occlusion) &&
+									(face_sa[c].head_stick>face_sa[c-1].head_stick))||
+									((face_sa[c].head_stick_before_occlusion<face_sa[c-1].head_stick_before_occlusion) &&
+									(face_sa[c].head_stick<face_sa[c-1].head_stick)))
+								{
+									face_sa[c].id_= c+1;
+									face_sa[c-1].id_= c;
+									Faces[c].fid=c+1;
+									Faces[c-1].fid=c;
+								}
+								else
+								{
+									face_sa[c].id_= c;
+									face_sa[c-1].id_= c+1;
+									Faces[c].fid = c ;
+									Faces[c-1].fid = c+1; 
+								}
+							}
+						}
+						else
+						{  
+							if((face_sa[c].occlusion == 1)||(face_sa[c-1].occlusion==1)||(face_sa[c+1].occlusion==1)) 
+							{
+								face_sa[c].head_stick=atof(face_sa[c].y);
+								face_sa[c+1].head_stick=atof(face_sa[c+1].y);
 								face_sa[c-1].head_stick=atof(face_sa[c-1].y);
 								if (count_occlusion == 0) 
 								{
 									face_sa[c].head_stick_before_occlusion=face_sa[c].head_stick;
 									face_sa[c-1].head_stick_before_occlusion=face_sa[c-1].head_stick;
+									face_sa[c+1].head_stick_before_occlusion=face_sa[c+1].head_stick;
 								}
-								count_occlusion++;
-								occlusion = 0;
-								
-								if (face_sa[c].head_stick_before_occlusion>0 && face_sa[c].head_stick<0) 
+								if (face_sa[c].count_occlusion == 0) 
 								{
-									face_sa[c].id_=c+1;
-									face_sa[c+1].id_ = c+2;
+									face_sa[c].head_stick_before_occlusion=face_sa[c].head_stick;
+									face_sa[c].count_occlusion++;
+									face_sa[c].occlusion = 0;
+								}
+								if (face_sa[c-1].count_occlusion == 0) 
+								{
+									face_sa[c-1].head_stick_before_occlusion=face_sa[c-1].head_stick;
+									face_sa[c-1].count_occlusion++;
+									face_sa[c-1].occlusion = 0;
+								}
+								if (face_sa[c+1].count_occlusion == 0) 
+								{
+									face_sa[c+1].head_stick_before_occlusion=face_sa[c+1].head_stick;
+									face_sa[c+1].count_occlusion++;
+									face_sa[c+1].occlusion = 0;
+								}
+								if (((face_sa[c].head_stick_before_occlusion>face_sa[c-1].head_stick_before_occlusion) &&
+									(face_sa[c].head_stick>face_sa[c-1].head_stick))||
+									((face_sa[c].head_stick_before_occlusion<face_sa[c-1].head_stick_before_occlusion) &&
+									(face_sa[c].head_stick<face_sa[c-1].head_stick)))
+								{
+									temp_id = face_sa[c].id_;
+									face_sa[c].id_= face_sa[c-1].id_;
+									face_sa[c-1].id_= temp_id;
+									temp_id = Faces[c].fid;
+									Faces[c].fid = Faces[c-1].fid;
+									Faces[c-1].fid = temp_id;
+								}
+								else if(((face_sa[c].head_stick_before_occlusion>face_sa[c+1].head_stick_before_occlusion) &&
+									(face_sa[c].head_stick>face_sa[c+1].head_stick))||
+									((face_sa[c].head_stick_before_occlusion<face_sa[c+1].head_stick_before_occlusion) &&
+									(face_sa[c].head_stick<face_sa[c+1].head_stick)))
+								{
+									temp_id = face_sa[c].id_;
+									face_sa[c].id_= face_sa[c+1].id_;
+									face_sa[c+1].id_= temp_id;
+									temp_id = Faces[c].fid;
+									Faces[c].fid = Faces[c+1].fid;
+									Faces[c+1].fid = temp_id;
 								}
 								
-								if (face_sa[c].head_stick_before_occlusion>0 && face_sa[c].head_stick<0) 
-								{
-									face_sa[c].id_=c;
-									face_sa[c-1].id_= c+1;
-								}
 							}
 						}
 					}	
@@ -575,30 +663,30 @@ int main( int argc, char** argv )
 					}	
 				
 					for(c=0;c<NO_FACES;c++)
-					{
-						printf("\nhead_stick %d = %g",c,face_sa[c].head_stick);
-						printf("\n0_face_id=%d\n",Faces[c].fid/*face_sa[c].id_*/);
-						sprintf(string_faces, "face_%d", Faces[c].fid/*face_sa[c].id_*/ );
-						//ROS_INFO("%d %d %d",face_sa[c].track_window.x,face_sa[c].track_window.y);
-						cvPutText(face_sa[0].image,string_faces,cvPoint(face_sa[c].track_window.x+50,face_sa[c].track_window.y+50),&font, CV_RGB(255,0,0));
-						printf("\ntrack_box.center.y = %f\n",face_sa[c].track_box.center.y);
-						//--------- print coordinates of the Kinect stick models ----------
-						sprintf(text, "face_%s = %s m", face_sa[c].id, face_sa[c].y);
-						cvPutText(face_sa[0].image,text,cvPoint(10,430+(20*c)),&font, CV_RGB(255,255,100));
-					}
-					//ros::Duration(10).sleep();
-					cvLine (face_sa[0].image,  (cvPoint(0,400)),(cvPoint(600,400)), CV_RGB(255,0,255), 3, 1, 0);
+			{
+			printf("\nhead_stick %d = %g",c,face_sa[c].head_stick);
+			printf("\n0_face_id=%d\n",Faces[c].fid/*face_sa[c].id_*/);
+			sprintf(string_faces, "face_%d", Faces[c].fid/*face_sa[c].id_*/ );
+			//ROS_INFO("%d %d %d",face_sa[c].track_window.x,face_sa[c].track_window.y);
+			cvPutText(face_sa[0].image,string_faces,cvPoint(face_sa[c].track_window.x+50,face_sa[c].track_window.y+50),&font, CV_RGB(255,0,0));
+			printf("\ntrack_box.center.y = %f\n",face_sa[c].track_box.center.y);
+			//--------- print coordinates of the Kinect stick models ----------
+			sprintf(text, "face_%s = %s m", face_sa[c].id, face_sa[c].y);
+			cvPutText(face_sa[0].image,text,cvPoint(10,430+(20*c)),&font, CV_RGB(255,255,100));
+			}
+			//ros::Duration(10).sleep();
+			cvLine (face_sa[0].image,  (cvPoint(0,400)),(cvPoint(600,400)), CV_RGB(255,0,255), 3, 1, 0);
 					
-					cvLine (face_sa[0].image,  (cvPoint(290,390)),(cvPoint(290,410)), CV_RGB(255,0,255), 3, 1, 0);
+			cvLine (face_sa[0].image,  (cvPoint(290,390)),(cvPoint(290,410)), CV_RGB(255,0,255), 3, 1, 0);
 					
-					cvPutText(face_sa[0].image,"0",cvPoint(283,376),&font, CV_RGB(255,0,255));
-					/*
-					if (track_box.center.y > track_box2.center.y - 5 && track_box.center.y < track_box2.center.y + 5) {
-						printf("\n\nOcclusion\n\n");
-					}
-					*/
-					//if(NO_FACES>1)
-					//{
+			cvPutText(face_sa[0].image,"0",cvPoint(283,376),&font, CV_RGB(255,0,255));
+			/*
+			if (track_box.center.y > track_box2.center.y - 5 && track_box.center.y < track_box2.center.y + 5) {
+				printf("\n\nOcclusion\n\n");
+			}
+			*/
+			//if(NO_FACES>1)
+			//{
 						for(c=0;c<NO_FACES;c++)
 						{	
 							sprintf(hist_str2,"Histogram_%d",c+1);
@@ -625,7 +713,7 @@ int main( int argc, char** argv )
 								cvZero( face_sa[c].histimg );
 							}
 							sleep(1);
-						return 0;
+						//return 0;
 						case 's':
 							sleep(5);
 							continue;	
@@ -652,7 +740,8 @@ int main( int argc, char** argv )
 
 face* detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& nestedCascade, 
 //void detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& nestedCascade, 
-		double scale){
+		double scale)
+		{
 	
 	
 	face Proswpa[10];
@@ -705,11 +794,11 @@ face* detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& ne
 		snprintf(string_faces, sizeof(string_faces), "face_%d", i+1);
 		putText(img, string_faces, center, FONT_HERSHEY_COMPLEX_SMALL, 0.8, color, 1, CV_AA);
 		if(i>=0){
-			Faces[i].fid=i;
+			Faces[i].fid=i+1;
 			Faces[i].x = center.x;
 			Faces[i].y = center.y;
 			Faces[i].r = radius;
-			printf("-------------\n%d %d %d %d\n\n",Proswpa[i].fid,Proswpa[i].x,Proswpa[i].y,Proswpa[i].r);
+			printf("-------------\n%d %d %d %d\n\n",Faces[i].fid,Faces[i].x,Faces[i].y,Faces[i].r);
 
 		}
 		/*
@@ -771,3 +860,5 @@ face* detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& ne
 	return /*;*/Faces;
 
 }
+
+
