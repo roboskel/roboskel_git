@@ -131,15 +131,16 @@ int main (int argc, char** argv)
 					heads.x[i-1]=origin.x();
 					heads.y[i-1]=origin.y();
 					heads.z[i-1]=origin.z();
-					
-					//ROS_INFO("TRY");
+					printf("X:%f  Y:%f   Z:%f",origin.x(),origin.y(),origin.z());
+					ros::Duration(1).sleep();
+					ROS_INFO("TRY");
 					
 					//file<<skel_ts<<" "<<i<<" ";
 					//ros::Duration(1).sleep();
 					//if ((cord.x!=heads.x_prev[i-1])&&(cord.y!=heads.y_prev[i-1])&&(cord.z!=heads.z_prev[i-1]))
 					if ((heads.x[i-1]!=heads.x_prev[i-1])&&(heads.y[i-1]!=heads.y_prev[i-1])&&(heads.z[i-1]!=heads.z_prev[i-1]))
 					{
-						//ROS_INFO("IF");
+						ROS_INFO("IF");
 						rec[i-1] =1;
 						heads.x_prev[i-1] = heads.x[i-1];
 						heads.y_prev[i-1] = heads.y[i-1];
@@ -149,7 +150,7 @@ int main (int argc, char** argv)
 						//file<<heads.x[i-1]<<" "<<heads.y[i-1]<<" "<<" "<<heads.z[i-1]<<" ";
 					}
 					else
-					{	//ROS_INFO("ELSE");
+					{	ROS_INFO("ELSE");
 						//heads.x[i-1]=0;
 						//heads.y[i-1]=0;
 						//heads.z[i-1]=0;
@@ -164,8 +165,9 @@ int main (int argc, char** argv)
 				}
 				catch (tf::TransformException ex)
 				{
-					//ROS_INFO("CATCH");
+					ROS_INFO("CATCH");
 					//ros::Duration(1).sleep();
+					//ros::shutdown();
 					rec[i-1]=0;
 					//heads.fid=1337;
 					//heads.x[i-1]=0;
@@ -204,13 +206,13 @@ int main (int argc, char** argv)
 		  sstream2.str(std::string());
 		  sstream2.clear();
 		  //msg_ar.clear();
-			//ROS_INFO("AFTER CALL");
+			ROS_INFO("AFTER CALL");
 		}
 		skel_last_time=skel_cur_time;
-		//ROS_INFO("OUTSIDE LOOP");
+		ROS_INFO("OUTSIDE LOOP");
 		skel_cur_time=ros::Time::now();
 		ros::spinOnce();
-		//ROS_INFO("SPINNED");	
+		ROS_INFO("SPINNED");	
 	}
 	ros::shutdown();
 //file.close();
