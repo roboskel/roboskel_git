@@ -97,6 +97,7 @@ int main (int argc, char** argv)
 	skel_last_time = ros::Time::now();
 	rn_face::head_cords_m_array msg_ar;
 	int i ;
+	int rec[6]={0,0,0,0,0,0};
 	int no_faces=0;
 	//head_cords heads ;
 	while (node.ok())
@@ -105,10 +106,11 @@ int main (int argc, char** argv)
 		ROS_INFO("IN WHILE");
 		skel_cur_time=ros::Time::now();
 		seconds=skel_cur_time.toSec()-skel_last_time.toSec();
-		if ((REC==1)&&(seconds>0.1))
-		{	ROS_INFO("BEFORE CALL");
+		if ((REC==1)&&(seconds>0.2))
+		{	//ROS_INFO("BEFORE CALL");
 			//send_transforms(/*node*/);
-				
+			ROS_INFO("STARTED");
+		no_faces=0;		
 		p1 = std::chrono::system_clock::now();
 		sstream2 << std::chrono::duration_cast<std::chrono::milliseconds>(p1.time_since_epoch()).count() ;
 		sstream2>>skel_ts;
@@ -117,17 +119,19 @@ int main (int argc, char** argv)
 			{
 				sstream << i;
 				head=head+sstream.str();
-				std::cout << "Follow this command:" << head << endl;
-				ROS_INFO("OEOEOEOE");
+				//std::cout << "Follow this command:" << head << endl;
+				//ROS_INFO("OEOEOEOE");
 				//ros::Duration(1).sleep();
 				rn_face::head_cords_m msg;
 				try{
 				  listener.lookupTransform("/openni_depth_frame", head,
 										   ros::Time(0), transform);
+					
 					origin =transform.getOrigin();
 					heads.x[i-1]=origin.x();
 					heads.y[i-1]=origin.y();
 					heads.z[i-1]=origin.z();
+					
 					//ROS_INFO("TRY");
 					
 					//file<<skel_ts<<" "<<i<<" ";
@@ -136,7 +140,7 @@ int main (int argc, char** argv)
 					if ((heads.x[i-1]!=heads.x_prev[i-1])&&(heads.y[i-1]!=heads.y_prev[i-1])&&(heads.z[i-1]!=heads.z_prev[i-1]))
 					{
 						//ROS_INFO("IF");
-						//rec =1;
+						rec[i-1] =1;
 						heads.x_prev[i-1] = heads.x[i-1];
 						heads.y_prev[i-1] = heads.y[i-1];
 						heads.z_prev[i-1] = heads.z[i-1];
@@ -146,13 +150,13 @@ int main (int argc, char** argv)
 					}
 					else
 					{	//ROS_INFO("ELSE");
-						heads.x[i-1]=0;
-						heads.y[i-1]=0;
-						heads.z[i-1]=0;
-						heads.x_prev[i-1]=0;
-						heads.y_prev[i-1]=0;
-						heads.z_prev[i-1]=0;
-						//rec=0;
+						//heads.x[i-1]=0;
+						//heads.y[i-1]=0;
+						//heads.z[i-1]=0;
+						//heads.x_prev[i-1]=0;
+						//heads.y_prev[i-1]=0;
+						//heads.z_prev[i-1]=0;
+						rec[i-1]=0;
 						//ros::Duration(1).sleep();
 						//file<<heads.x[i-1]<<" "<<heads.y[i-1]<<" "<<heads.z[i-1]<<" ";
 
@@ -162,22 +166,32 @@ int main (int argc, char** argv)
 				{
 					//ROS_INFO("CATCH");
 					//ros::Duration(1).sleep();
-					//rec=0;
+					rec[i-1]=0;
 					//heads.fid=1337;
-					heads.x[i-1]=0;
-					heads.y[i-1]=0;
-					heads.z[i-1]=0;
-					heads.x_prev[i-1]=0;
-					heads.y_prev[i-1]=0;
-					heads.z_prev[i-1]=0;
+					//heads.x[i-1]=0;
+					//heads.y[i-1]=0;
+					//heads.z[i-1]=0;
+					//heads.x_prev[i-1]=0;
+					//heads.y_prev[i-1]=0;
+					//heads.z_prev[i-1]=0;
 					
 				}
-				file<<endl;
+				if(rec[i-1]==0)
+				{
+					msg.timestamp=stol(skel_ts);
+					msg.id=i-1;
+					msg.x=0;
+					msg.y=0;
+					msg.z=0;
+				}
+				//file<<endl;
+				else{
 				msg.timestamp=stol(skel_ts);
 				msg.id=i-1;
 				msg.x=heads.x[i-1];
 				msg.y=heads.y[i-1];
 				msg.z=heads.z[i-1];
+				}
 				msg_ar.head_co.push_back(msg);
 				head ="head_";
 				sstream.str(std::string());
@@ -186,14 +200,17 @@ int main (int argc, char** argv)
 		  }
 		  msg_ar.no_faces=no_faces;
 		  skel_data.publish(msg_ar);
+		  skel_ts.clear();
+		  sstream2.str(std::string());
+		  sstream2.clear();
 		  //msg_ar.clear();
-			ROS_INFO("AFTER CALL");
+			//ROS_INFO("AFTER CALL");
 		}
 		skel_last_time=skel_cur_time;
-		ROS_INFO("OUTSIDE LOOP");
+		//ROS_INFO("OUTSIDE LOOP");
 		skel_cur_time=ros::Time::now();
 		ros::spinOnce();
-		ROS_INFO("SPINNED");	
+		//ROS_INFO("SPINNED");	
 	}
 	ros::shutdown();
 //file.close();
