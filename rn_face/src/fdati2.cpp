@@ -410,7 +410,6 @@ int main( int argc, char** argv )
 		
 		if (detected==1)
 		{
-			
 			for (c=0;c<NO_FACES;c++)
 			{
 				_vmin[c]=face_sa[c].vmin;
@@ -519,6 +518,7 @@ int main( int argc, char** argv )
 					{
 						face_sa[0].head_stick=atof(face_sa[0].y);
 					}
+					
 					else if(NO_FACES>=2)
 					{
 						if (c==0)
@@ -659,12 +659,197 @@ int main( int argc, char** argv )
 					}	
 					*/
 					}	
+					
+			if(NO_FACES==1)
+					{
+						face_sa[0].head_stick=atof(face_sa[0].y);
+					}
+			else 
+			{
+				for(c=0;c<NO_FACES;c++)
+				{
+					if((face_sa[c].occlusion == 1)||(face_sa[c+1].occlusion==1)) 
+							{
+								face_sa[c].head_stick=atof(face_sa[c].y);
+								face_sa[c+1].head_stick=atof(face_sa[c+1].y);
+								if (face_sa[c].count_occlusion == 0) 
+								{
+									face_sa[c].head_stick_before_occlusion=face_sa[c].head_stick;
+									face_sa[c].count_occlusion++;
+									face_sa[c].occlusion = 0;
+								}
+								
+								if (face_sa[c+1].count_occlusion == 0) 
+								{
+									face_sa[c+1].head_stick_before_occlusion=face_sa[c+1].head_stick;
+									face_sa[c+1].count_occlusion++;
+									face_sa[c+1].occlusion = 0;
+								}
+								
+								else if(((face_sa[c].head_stick_before_occlusion>face_sa[c+1].head_stick_before_occlusion) &&
+									(face_sa[c].head_stick>face_sa[c+1].head_stick))||
+									((face_sa[c].head_stick_before_occlusion<face_sa[c+1].head_stick_before_occlusion) &&
+									(face_sa[c].head_stick<face_sa[c+1].head_stick)))
+								{	//ROS_INFO("#3");
+									temp_id = face_sa[c].id_;
+									face_sa[c].id_= face_sa[c+1].id_;
+									face_sa[c+1].id_= temp_id;
+									temp_id = Faces[c].fid;
+									Faces[c].fid = Faces[c+1].fid;
+									Faces[c+1].fid = temp_id;
+								}
+								
+							}
+				}
+			}
+					/*
+					else if(NO_FACES>=2)
+					{
+						if (c==0)
+						{ROS_INFO("#1");
+							if ((face_sa[0].occlusion == 1)||(face_sa[1].occlusion==1)) 
+							{
+								face_sa[0].head_stick=atof(face_sa[0].y);
+								face_sa[1].head_stick=atof(face_sa[1].y);
+								if (face_sa[0].count_occlusion == 0) 
+								{
+									face_sa[0].head_stick_before_occlusion=face_sa[0].head_stick;
+									face_sa[0].count_occlusion++;
+									face_sa[0].occlusion = 0;
+								}
+								if (face_sa[1].count_occlusion == 0)
+								{
+									face_sa[1].head_stick_before_occlusion=face_sa[1].head_stick;
+									face_sa[1].count_occlusion++;
+									face_sa[1].occlusion = 0;
+								}
+								if (((face_sa[0].head_stick_before_occlusion>=face_sa[1].head_stick_before_occlusion)&&
+									(face_sa[0].head_stick>=face_sa[1].head_stick))||
+									((face_sa[0].head_stick_before_occlusion<=face_sa[1].head_stick_before_occlusion)&&
+									(face_sa[0].head_stick<=face_sa[1].head_stick)))
+								{
+									face_sa[0].id_=1;
+									face_sa[1].id_=2;
+									Faces[0].fid=1;
+									Faces[1].fid=2;
+								}
+								else 
+								{	
+									face_sa[0].id_=2;
+									face_sa[1].id_=1;
+									Faces[0].fid=2;
+									Faces[1].fid=1;
+								}
+								
+								
+							}
+						}
+						
+						else if (c==(NO_FACES-1)&&(c!=1))
+						{//ROS_INFO("#2");
+							if ((face_sa[c].occlusion == 1)||(face_sa[c-1].occlusion==1)) 
+							{
+								face_sa[c].head_stick=atof(face_sa[c].y);
+								face_sa[c-1].head_stick=atof(face_sa[c-1].y);
+								if (face_sa[c].count_occlusion == 0) 
+								{
+									face_sa[c].head_stick_before_occlusion=face_sa[c].head_stick;
+									face_sa[c].count_occlusion++;
+									face_sa[c].occlusion = 0;
+								}
+								if (face_sa[c-1].count_occlusion == 0) 
+								{
+									face_sa[c-1].head_stick_before_occlusion=face_sa[c-1].head_stick;
+									face_sa[c-1].count_occlusion++;
+									face_sa[c-1].occlusion = 0;
+								}
+								if (((face_sa[c].head_stick_before_occlusion>face_sa[c-1].head_stick_before_occlusion) &&
+									(face_sa[c].head_stick>face_sa[c-1].head_stick))||
+									((face_sa[c].head_stick_before_occlusion<face_sa[c-1].head_stick_before_occlusion) &&
+									(face_sa[c].head_stick<face_sa[c-1].head_stick)))
+								{
+									face_sa[c].id_= c+1;
+									face_sa[c-1].id_= c;
+									Faces[c].fid=c+1;
+									Faces[c-1].fid=c;
+								}
+								else
+								{
+									face_sa[c].id_= c;
+									face_sa[c-1].id_= c+1;
+									Faces[c].fid = c ;
+									Faces[c-1].fid = c+1; 
+								}
+							}
+						}
+						else
+						{  //ROS_INFO("#3");
+							if((face_sa[c].occlusion == 1)||(face_sa[c-1].occlusion==1)||(face_sa[c+1].occlusion==1)) 
+							{
+								face_sa[c].head_stick=atof(face_sa[c].y);
+								face_sa[c+1].head_stick=atof(face_sa[c+1].y);
+								face_sa[c-1].head_stick=atof(face_sa[c-1].y);
+								if (count_occlusion == 0) 
+								{
+									face_sa[c].head_stick_before_occlusion=face_sa[c].head_stick;
+									face_sa[c-1].head_stick_before_occlusion=face_sa[c-1].head_stick;
+									face_sa[c+1].head_stick_before_occlusion=face_sa[c+1].head_stick;
+								}
+								if (face_sa[c].count_occlusion == 0) 
+								{
+									face_sa[c].head_stick_before_occlusion=face_sa[c].head_stick;
+									face_sa[c].count_occlusion++;
+									face_sa[c].occlusion = 0;
+								}
+								if (face_sa[c-1].count_occlusion == 0) 
+								{
+									face_sa[c-1].head_stick_before_occlusion=face_sa[c-1].head_stick;
+									face_sa[c-1].count_occlusion++;
+									face_sa[c-1].occlusion = 0;
+								}
+								if (face_sa[c+1].count_occlusion == 0) 
+								{
+									face_sa[c+1].head_stick_before_occlusion=face_sa[c+1].head_stick;
+									face_sa[c+1].count_occlusion++;
+									face_sa[c+1].occlusion = 0;
+								}
+								if (((face_sa[c].head_stick_before_occlusion>face_sa[c-1].head_stick_before_occlusion) &&
+									(face_sa[c].head_stick>face_sa[c-1].head_stick))||
+									((face_sa[c].head_stick_before_occlusion<face_sa[c-1].head_stick_before_occlusion) &&
+									(face_sa[c].head_stick<face_sa[c-1].head_stick)))
+								{
+									temp_id = face_sa[c].id_;
+									face_sa[c].id_= face_sa[c-1].id_;
+									face_sa[c-1].id_= temp_id;
+									temp_id = Faces[c].fid;
+									Faces[c].fid = Faces[c-1].fid;
+									Faces[c-1].fid = temp_id;
+								}
+								else if(((face_sa[c].head_stick_before_occlusion>face_sa[c+1].head_stick_before_occlusion) &&
+									(face_sa[c].head_stick>face_sa[c+1].head_stick))||
+									((face_sa[c].head_stick_before_occlusion<face_sa[c+1].head_stick_before_occlusion) &&
+									(face_sa[c].head_stick<face_sa[c+1].head_stick)))
+								{	//ROS_INFO("#3");
+									temp_id = face_sa[c].id_;
+									face_sa[c].id_= face_sa[c+1].id_;
+									face_sa[c+1].id_= temp_id;
+									temp_id = Faces[c].fid;
+									Faces[c].fid = Faces[c+1].fid;
+									Faces[c+1].fid = temp_id;
+								}
+								
+							}
+						}
+					}	
+				*/	
+			
 				
+			ROS_INFO("ID1 %d",Faces[0].fid);
+			ROS_INFO("ID2 %d",Faces[1].fid);
+			//ros::Duration(3).sleep();
 			for(c=0;c<NO_FACES;c++)
 			{
-			//ROS_INFO("ID1 %d",Faces[0].fid);
-			//ROS_INFO("ID2 %d",Faces[1].fid);
-			//ros::Duration(3).sleep();
+			
 			printf("\nhead_stick %d = %g",c,face_sa[c].head_stick);
 			printf("\n0_face_id=%d\n",Faces[c].fid/*face_sa[c].id_*/);
 			sprintf(string_faces, "face_%d", Faces[c].fid/*face_sa[c].id_*/ );
