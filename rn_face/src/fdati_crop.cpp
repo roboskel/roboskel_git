@@ -140,6 +140,7 @@ struct face_{
 	CvRect selection;
 	CvRect track_window;
 	CvBox2D track_box;
+	CvBox2D tb2;
 	CvConnectedComp track_comp;
 	
 	face_():number(9),image(0),hsv(0),hue(0),mask(0),backproject(0),histimg(0),backproject_mode(0),select_object(0),track_object(0),
@@ -262,7 +263,7 @@ int main( int argc, char** argv )
 	//SESSION_MAX=6;
 	NO_FACES=2;
 	SPEAKER_ID=1;
-	int cut_height=350;
+	int cut_height=300;
 	int c;
 	int i;
 	int sum=0;
@@ -297,7 +298,7 @@ int main( int argc, char** argv )
 	cvNamedWindow("Face 1",1);
 	cvMoveWindow("Face 1",0,530);
 	cvNamedWindow("Face 2",1);
-	cvMoveWindow("Face 2",340,530);
+	cvMoveWindow("Face 2",350,530);
 	cvInitFont(&font,CV_FONT_HERSHEY_PLAIN|CV_FONT_ITALIC,1,2,2,2);
 	
 	const String scaleOpt = "--scale=";
@@ -404,7 +405,7 @@ int main( int argc, char** argv )
 		//for (c=0;c<NO_FACES;c++)
 		//{
 			//cvCopy(iplImg, face_sa[c].image, 0);
-			//cvCvtColor(face_sa[c].image, face_sa[c].hsv, CV_BGR2HSV );
+			cvCvtColor(face_sa[c].image, face_sa[c].hsv, CV_BGR2HSV );
 		}
 		cvShowImage("Face 1",face_sa[0].image);
 		cvWaitKey(1);
@@ -554,7 +555,12 @@ int main( int argc, char** argv )
 				
 			//ros::Duration(3).sleep();
 			for(c=0;c<NO_FACES;c++)
-			{
+			{	
+				
+				face_sa[c].tb2=CvBox2D(CvPoint2D32f(face_sa[c].track_box.center-x+c*(640/NO_FACES),
+															face_sa[c].track_box.center.y+0),
+								face_sa[c].track_box.size,
+								face_sa[c].track_box.angle);
 				if(face_sa[c].detected==1)
 				{
 					DTEMP=(face_sa[c].track_box.size.height*face_sa[c].track_box.size.width);
@@ -567,7 +573,7 @@ int main( int argc, char** argv )
 					{	
 						if(flashing==1)
 						{
-							cvEllipseBox( face_sa[c].image, face_sa[c].track_box, 
+							cvEllipseBox( iplImg /*face_sa[c].image*/, face_sa[c].tb2, 
 							CV_RGB(rgb_map_.rgb_ar[Faces[c].fid-1][0],rgb_map_.rgb_ar[Faces[c].fid-1][1],rgb_map_.rgb_ar[Faces[c].fid-1][2]), 3, CV_AA, 0 );
 							flashing=-flashing;
 						}
@@ -579,13 +585,13 @@ int main( int argc, char** argv )
 					else
 					{	
 						//cvEllipseBox( face_sa[c].image, face_sa[c].track_box, 
-						cvEllipseBox(iplImg,face_sa[c].track_box,
+						cvEllipseBox(iplImg,face_sa[c].tb2,
 						CV_RGB(rgb_map_.rgb_ar[Faces[c].fid-1][0],rgb_map_.rgb_ar[Faces[c].fid-1][1],rgb_map_.rgb_ar[Faces[c].fid-1][2]), 3, CV_AA, 0 );
 					}
 				}
 			}
 			//ros::Duration(10).sleep();
-			cvCircle(iplImg,cvPoint(100,100),10,CV_RGB(rgb_map_.rgb_ar[Faces[c].fid-1][0],rgb_map_.rgb_ar[Faces[c].fid-1][1],rgb_map_.rgb_ar[Faces[c].fid-1][2]),1,8,0);
+			//cvCircle(iplImg,cvPoint(100,100),10,CV_RGB(rgb_map_.rgb_ar[Faces[c].fid-1][0],rgb_map_.rgb_ar[Faces[c].fid-1][1],rgb_map_.rgb_ar[Faces[c].fid-1][2]),1,8,0);
 			cvShowImage( "Face Detection & Tracking", iplImg);
 			cvWaitKey(1); // o xronos gia kathe frame
 			//------------------------ press a key -----------------------
