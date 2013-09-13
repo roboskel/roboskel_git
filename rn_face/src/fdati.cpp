@@ -98,12 +98,14 @@ int occlusion = 1;
 int count_occlusion = 0;
 int temp_id;
 std::string data_adr="";
+IplImage *img ;
 struct face_{
 //-------------------
 //original toy alex
 	IplImage *image,*hsv,*hue,*mask,*backproject,*histimg;
 	CvHistogram *hist;
-
+	CvRect roi;
+	Mat frame,frameCopy;
 	int backproject_mode ;//= 0;
 	int select_object ;//= 0;
 	int track_object ;//= 0;
@@ -172,7 +174,19 @@ CvScalar hsv2rgb( float hue ){
 
 
 
-
+IplImage* crop( IplImage* src,  CvRect roi){
+	  // Must have dimensions of output image
+	  IplImage* cropped = cvCreateImage( cvSize(roi.width,roi.height), src->depth, src->nChannels );
+	 
+	  // Say what the source region is
+	  cvSetImageROI( src, roi );
+	 
+	  // Do the copy
+	  cvCopy( src, cropped );
+	  cvResetImageROI( src );
+	 
+	  return cropped;
+	}
 
 void no_faces_cb(const std_msgs::Int64::ConstPtr& msg)
 {
@@ -209,7 +223,7 @@ void skelCallback(const rn_face::head_cords_m_array::ConstPtr& msg,struct face_ 
       
     }
     
-    ROS_INFO("NO_FACES::%d",NO_FACES);
+    //ROS_INFO("NO_FACES::%d",NO_FACES);
     SKEL_SET=1;
     /*
     ROS_INFO("READ STICK DATA");
@@ -319,38 +333,80 @@ int main( int argc, char** argv )
 		//ROS_INFO("DETECTED : %d" ,detected);
 		//ROS_INFO("IN LOOP");
 		ros::spinOnce();
+		cvNamedWindow("Face Detection & Tracking",1);
+		if(ADDR_SET==1)
+		{
+			
+			//cvMoveWindow("Face Detection & Tracking",100,100);
+			str_ = data_adr.c_str();
+			result=access(str_, F_OK);
+			if (result==0)
+			{
+				//ROS_INFO("IN SECOND LOOP");
+					iplImg = cvLoadImage(str_,1);
+					img = cvCreateImage( cvGetSize(iplImg), 8, 3 );
+					img->origin = iplImg->origin;
+					cvCopy(iplImg, img, 0);
+					//ROS_INFO("#3");
+						frame = iplImg;
+						if( frame.empty() )
+							return 0;
+						if( iplImg->origin == IPL_ORIGIN_TL )
+							frame.copyTo( frameCopy );
+						else
+							{flip( frame, frameCopy, 0 );}
+							//ROS_INFO("SHOWING");
+					cvShowImage("Face Detection & Tracking",img);
+					
+					//cvReleaseImage(&img);
+					cvWaitKey(1);
+				}
+
+		}
 		if ((SKEL_SET==1)&&(ADDR_SET==1))
 		{
 		//ROS_INFO("STARTED");
 		//ROS_INFO("CHECKING DATA_ADDR");
+		/*
+			str_ = data_adr.c_str();
+			result=access(str_, F_OK);
+			if (result==0)
+			{
+				ROS_INFO("IN SECOND LOOP");
+					iplImg = cvLoadImage(str_,1);
+					img = cvCreateImage( cvGetSize(iplImg), 8, 3 );
+					img->origin = iplImg->origin;
+					//ROS_INFO("#3");
+						frame = iplImg;
+						if( frame.empty() )
+							return 0;
+						if( iplImg->origin == IPL_ORIGIN_TL )
+							frame.copyTo( frameCopy );
+						else
+							{flip( frame, frameCopy, 0 );}
+							ROS_INFO("SHOWING");
+					cvShowImage("Face Detection & Tracking",img);
+					//cvWaitKey(0);
+				}*/
 		if(data_adr.empty()){continue;}
 		//ROS_INFO("CHECKED DATA_ADDR");
-		cvNamedWindow("Face Detection & Tracking",1);
 		for (c=0;c<NO_FACES;c++)
 		{
+			
 			//ROS_INFO("ENTERED HIST LOOP");
 			sprintf(hist_str,"Histogram_%d",c+1);
 			//text += boost::lexical_cast<std::string>(c+1);
 			cvNamedWindow(hist_str,1);
+			cvMoveWindow (hist_str,(350*c),600);
 			strcpy(hist_str,"Histogram");
 			//ROS_INFO("LEFT HIST LOOP");
 			
 		}
 		
 	//MY_LOOP
-	str_ = data_adr.c_str();
-	result=access(str_, F_OK);
+	
 	if (result==0)
 	{
-		//ROS_INFO("IN SECOND LOOP");
-			iplImg = cvLoadImage(str_,1);
-				frame = iplImg;
-				if( frame.empty() )
-					return 0;
-				if( iplImg->origin == IPL_ORIGIN_TL )
-					frame.copyTo( frameCopy );
-				else
-					flip( frame, frameCopy, 0 );
 		//ROS_INFO("CREATED IPL IMG");
 		//if(!face_sa[0].image)
 		//{	
@@ -359,6 +415,7 @@ int main( int argc, char** argv )
 			{		
 				if(!face_sa[c].image)
 				{
+					//ROS_INFO("#1");
 					//ROS_INFO("#1");
 					face_sa[c].image=cvCreateImage( cvGetSize(iplImg), 8, 3 );
 					//ROS_INFO("#2");
@@ -430,7 +487,7 @@ int main( int argc, char** argv )
 						face_sa[c].occlusion = 1;
 						face_sa[c].track_object = -1;
 						face_sa[c].selection = cvRect((Faces[c].x)-Faces[c].r,Faces[c].y-Faces[c].r, Faces[c].x+Faces[c].r,Faces[c].y+Faces[c].r);				
-						ROS_INFO("SX : %d, SY : %d",face_sa[c].selection.x, face_sa[c].selection.y);
+						//ROS_INFO("SX : %d, SY : %d",face_sa[c].selection.x, face_sa[c].selection.y);
 						cvRectangle(face_sa[0].image, cvPoint(face_sa[c].selection.x, face_sa[c].selection.y), cvPoint(face_sa[c].selection.width, face_sa[c].selection.height),
 						CV_RGB(rgb_map_.rgb_ar[c][0],rgb_map_.rgb_ar[c][1],rgb_map_.rgb_ar[c][2]), 3, CV_AA, 0);
 					}
@@ -498,8 +555,18 @@ int main( int argc, char** argv )
 					//printf("\n\nCamshift1\n\n");
 					cvCalcBackProject( &face_sa[c].hue, face_sa[c].backproject, face_sa[c].hist ); //Calculates the back projection. --> ypologizei to kentro mazas me bash ta barh
 					cvAnd( face_sa[c].backproject, face_sa[c].mask, face_sa[c].backproject, 0 );
+					//ROS_INFO("BEFORE CS");
+					//ROS_INFO("FACE_SA[%d].TRACK_WINDON : X = %d   Y = %d WIDTH = %d HEIGHT = %d",c,face_sa[c].track_window.x, 
+						//face_sa[c].track_window.y, face_sa[c].track_window.width, face_sa[c].track_window.height);
 					cvCamShift( face_sa[c].backproject, face_sa[c].track_window,cvTermCriteria( CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 10, 1 ), &face_sa[c].track_comp, &face_sa[c].track_box );
+					//ROS_INFO("AFTER CAMSHIFT");
+					//ROS_INFO("FACE_SA[%d].TRACK_WINDON : X = %d   Y = %d WIDTH = %d HEIGHT = %d",c,face_sa[c].track_window.x, 
+					//	face_sa[c].track_window.y, face_sa[c].track_window.width, face_sa[c].track_window.height);
 					face_sa[c].track_window = face_sa[c].track_comp.rect;
+					//ROS_INFO("AFTER TRC");
+					//ROS_INFO("FACE_SA[%d].TRACK_WINDON : X = %d   Y = %d WIDTH = %d HEIGHT = %d",c,face_sa[c].track_window.x, 
+						//face_sa[c].track_window.y, face_sa[c].track_window.width, face_sa[c].track_window.height);
+					ros::Duration(20).sleep();
 					
 					if( face_sa[c].backproject_mode )
 					{
@@ -698,6 +765,7 @@ int main( int argc, char** argv )
 							sprintf(hist_str2,"Histogram_%d",c+1);
 							cvShowImage( "Face Detection & Tracking", face_sa[0].image );
 							cvShowImage( hist_str2, face_sa[c].histimg );
+							cvMoveWindow (hist_str2,(350*c),600);
 							strcpy(hist_str2,"Histogram");
 						}
 					//}
