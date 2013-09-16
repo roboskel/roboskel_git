@@ -227,6 +227,7 @@ void box_area(double x,double y, double z,int &py, int &pz, int &width, int &hei
 		tempy = 319 + (-y/x)*640;
 	}
 	py = static_cast<int>(tempy+0.5)-90;
+	/*
 	if (z > 0)
 	{
 		tempz = 239 - ((z)/x)*480;
@@ -235,9 +236,10 @@ void box_area(double x,double y, double z,int &py, int &pz, int &width, int &hei
 	{
 		tempz = 239 + (-z/x)*480;
 	}
-	pz = static_cast<int>(tempz+0.5)-90;
+	*/ 
+	pz = 80/*static_cast<int>(tempz+0.5)-90*/;
 	width = 180;
-	height = 180;
+	height = 350;
 	printf("TempY = %f\nTempZ = %f\n",tempy,tempz);
 	printf("SkelY = %f\nSkelZ = %f\n",y,z);
 	printf("X = %d\nY = %d\nW = %d\nH = %d\n\n",py,pz,width,height);
@@ -426,7 +428,7 @@ int main( int argc, char** argv )
 							//ROS_INFO("SHOWING");
 					cvShowImage("Face Detection & Tracking",iplImg);
 					//cvReleaseImage(&img);
-					cvWaitKey(1);
+					cvWaitKey(10);
 				}
 
 		}
@@ -444,54 +446,57 @@ int main( int argc, char** argv )
 				{	
 					printf("C = %d\n",c);	
 					//ROS_INFO("#1");
-					if ((face_sa[c].x!=0)&&(face_sa[c].image_created==FALSE))
+					if (face_sa[c].x!=0)
 					{
-						sprintf(head,"Face_%d",c+1);
-						cvNamedWindow(head,1);
-						cvMoveWindow (head,(160*c),530);
-						strcpy(head,"Face_");
-						face_sa[c].image_created = TRUE; 
-					}
-					box_area(face_sa[c].x, face_sa[c].y, face_sa[c].z,/*factors,*/
-							face_sa[c].box_area.x, face_sa[c].box_area.y,
-							face_sa[c].box_area.width, face_sa[c].box_area.height);
-					//printf("X = %d\nY = %d\nW = %d\n H = %d\n",face_sa[c].box_area.x,face_sa[c].box_area.y
-					//	,face_sa[c].box_area.width,face_sa[c].box_area.height);
-					//ros::Duration(100).sleep();
-					face_sa[c].image=crop(iplImg,/*cvRect((640/NO_FACES)*c,0,640/NO_FACES,cut_height)*/face_sa[c].box_area);
-					ROS_INFO("#2");
-					face_sa[c].frame = face_sa[c].image;
-					if( face_sa[c].frame.empty() )
-						return 0;
-					if( face_sa[c].image->origin == IPL_ORIGIN_TL )
-						face_sa[c].frame.copyTo( face_sa[c].frameCopy );
-					else
-					{
-						flip( face_sa[c].frame, face_sa[c].frameCopy, 0 );
-					}
-					face_sa[c].image->origin=iplImg->origin;
-					//ROS_INFO("#3");
-					face_sa[c].hsv=cvCreateImage( cvGetSize(face_sa[c].image), 8, 3 );
-					//ROS_INFO("#4");
-					face_sa[c].hue=cvCreateImage( cvGetSize(face_sa[c].image), 8, 1 );
-					//ROS_INFO("#5");
-					face_sa[c].mask=cvCreateImage( cvGetSize(face_sa[c].image), 8, 1 );
-					//ROS_INFO("#6");
-					face_sa[c].backproject=cvCreateImage( cvGetSize(face_sa[c].image), 8, 1);
-					//ROS_INFO("#7");
-					face_sa[c].hist=cvCreateHist(1 , &face_sa[c].hdims, CV_HIST_ARRAY, &face_sa[c].hranges, 1);//Creates a histogram.
-					//ROS_INFO("#8" );
-					face_sa[c].histimg = cvCreateImage( cvSize(320,200), 8, 3 ); //Creates an image header and allocates the image data. //CvSize size, int depth, int channels)
-					//ROS_INFO("#9");
-					cvZero( face_sa[c].histimg );
-					//ROS_INFO("#10");
-					cvCvtColor(face_sa[c].image, face_sa[c].hsv, CV_BGR2HSV );
-					if(face_sa[c].image_created == TRUE)
-					{
-						sprintf(head,"Face_%d",c+1);
-						cvShowImage(head,face_sa[c].image);
-						strcpy(head,"Face_");
-						cvWaitKey(1);
+						if(face_sa[c].image_created==FALSE)
+						{
+							sprintf(head,"Face_%d",c+1);
+							cvNamedWindow(head,1);
+							cvMoveWindow (head,(160*c),530);
+							strcpy(head,"Face_");
+							face_sa[c].image_created = TRUE; 
+						}
+						box_area(face_sa[c].x, face_sa[c].y, face_sa[c].z,/*factors,*/
+								face_sa[c].box_area.x, face_sa[c].box_area.y,
+								face_sa[c].box_area.width, face_sa[c].box_area.height);
+						//printf("X = %d\nY = %d\nW = %d\n H = %d\n",face_sa[c].box_area.x,face_sa[c].box_area.y
+						//	,face_sa[c].box_area.width,face_sa[c].box_area.height);
+						//ros::Duration(100).sleep();
+						face_sa[c].image=crop(iplImg,/*cvRect((640/NO_FACES)*c,0,640/NO_FACES,cut_height)*/face_sa[c].box_area);
+						//ROS_INFO("#2");
+						face_sa[c].frame = face_sa[c].image;
+						if( face_sa[c].frame.empty() )
+							return 0;
+						if( face_sa[c].image->origin == IPL_ORIGIN_TL )
+							face_sa[c].frame.copyTo( face_sa[c].frameCopy );
+						else
+						{
+							flip( face_sa[c].frame, face_sa[c].frameCopy, 0 );
+						}
+						face_sa[c].image->origin=iplImg->origin;
+						//ROS_INFO("#3");
+						face_sa[c].hsv=cvCreateImage( cvGetSize(face_sa[c].image), 8, 3 );
+						//ROS_INFO("#4");
+						face_sa[c].hue=cvCreateImage( cvGetSize(face_sa[c].image), 8, 1 );
+						//ROS_INFO("#5");
+						face_sa[c].mask=cvCreateImage( cvGetSize(face_sa[c].image), 8, 1 );
+						//ROS_INFO("#6");
+						face_sa[c].backproject=cvCreateImage( cvGetSize(face_sa[c].image), 8, 1);
+						//ROS_INFO("#7");
+						face_sa[c].hist=cvCreateHist(1 , &face_sa[c].hdims, CV_HIST_ARRAY, &face_sa[c].hranges, 1);//Creates a histogram.
+						//ROS_INFO("#8" );
+						face_sa[c].histimg = cvCreateImage( cvSize(320,200), 8, 3 ); //Creates an image header and allocates the image data. //CvSize size, int depth, int channels)
+						//ROS_INFO("#9");
+						cvZero( face_sa[c].histimg );
+						//ROS_INFO("#10");
+						cvCvtColor(face_sa[c].image, face_sa[c].hsv, CV_BGR2HSV );
+						if(face_sa[c].image_created == TRUE)
+						{
+							sprintf(head,"Face_%d",c+1);
+							cvShowImage(head,face_sa[c].image);
+							strcpy(head,"Face_");
+							cvWaitKey(10);
+						}
 					}
 		}
 		//ROS_INFO("INITILIAZED HUES ETC");
@@ -626,13 +631,12 @@ int main( int argc, char** argv )
 					{
 						cvCvtColor( face_sa[c].backproject, face_sa[c].image, CV_GRAY2BGR ); //Converts an image from one color space to another.
 					}
-					/*
+					
 					if( !face_sa[c].image->origin )
 					{
 						face_sa[c].track_box.angle = -face_sa[c].track_box.angle; // CvBox2D - track_box
 					}
-					*/
-					//ROS_INFO("AFTER IFS");
+					ROS_INFO("AFTER IFS");
 				}
 			}
 				
@@ -646,8 +650,8 @@ int main( int argc, char** argv )
 					face_sa[c].new_center.y = face_sa[c].box_area.y + face_sa[c].box_area.height/2;
 					//face_sa[c].new_center.y = face_sa[c].track_box.center.x + (640/NO_FACES)*c  ;
 					face_sa[c].tb2.center = face_sa[c].new_center;
-					face_sa[c].tb2.size.width = face_sa[c].track_box.size.width+1;
-					face_sa[c].tb2.size.height = face_sa[c].track_box.size.height+1;
+					face_sa[c].tb2.size.width = face_sa[c].track_box.size.width;
+					face_sa[c].tb2.size.height = face_sa[c].track_box.size.height;
 					face_sa[c].tb2.angle = face_sa[c].track_box.angle;
 					DTEMP=(face_sa[c].tb2.size.height*face_sa[c].tb2.size.width);
 					if (DTEMP>DMAX)
@@ -655,11 +659,15 @@ int main( int argc, char** argv )
 						DMAX=DTEMP;
 						DOMINANT_ID=c+1;
 					}
+					printf("C DURING ELLIPSE = %d",c);
 					if(SPEAKER_ID==Faces[c].fid-1)
 					{	
 						if(flashing==1)
-						{
+						{	ROS_INFO("POINT #1");
 							cvEllipseBox( iplImg /*face_sa[c].image*/, face_sa[c].tb2, 
+							//cvCircle(iplImg,cvPointFrom32f(face_sa[c].tb2.center),
+							//static_cast<int>(sqrt((pow(2,face_sa[c].tb2.size.width/2)) +
+							//(pow(2,face_sa[c].tb2.size.height/2)))+0.5),
 							CV_RGB(rgb_map_.rgb_ar[Faces[c].fid-1][0],rgb_map_.rgb_ar[Faces[c].fid-1][1],
 									rgb_map_.rgb_ar[Faces[c].fid-1][2]), 3, CV_AA, 0 );
 							flashing=-flashing;
@@ -670,8 +678,11 @@ int main( int argc, char** argv )
 						}
 					}
 					else
-					{	
+					{	ROS_INFO("POINT #2");
 						cvEllipseBox(iplImg,face_sa[c].tb2,
+						//cvCircle(iplImg,cvPointFrom32f(face_sa[c].tb2.center),
+						//	static_cast<int>(sqrt((pow(2,face_sa[c].tb2.size.width/2)) +
+						//	(pow(2,face_sa[c].tb2.size.height/2)))+0.5),
 						CV_RGB(rgb_map_.rgb_ar[Faces[c].fid-1][0],rgb_map_.rgb_ar[Faces[c].fid-1][1],
 							rgb_map_.rgb_ar[Faces[c].fid-1][2]), 3, CV_AA, 0 );
 					}
@@ -742,7 +753,7 @@ face* detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& ne
     t = (double)cvGetTickCount();
 	//|CV_HAAR_FIND_BIGGEST_OBJECT
 	//|CV_HAAR_DO_ROUGH_SEARCH
-	cascade.detectMultiScale( smallImg, faces,1.1, 2, 0|CV_HAAR_SCALE_IMAGE,Size(30, 30) );
+	cascade.detectMultiScale( smallImg, faces,1.02, 2, 0|CV_HAAR_SCALE_IMAGE,Size(30, 30) );
 	t = (double)cvGetTickCount() - t;
     for( vector<Rect>::const_iterator r = faces.begin(); r != faces.end(); r++,i++/*, i++*/ )
     {
