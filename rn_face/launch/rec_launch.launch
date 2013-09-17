@@ -1,0 +1,12 @@
+<launch>
+	<node name="cap_img_d" pkg="rn_face" type="cap_img_d" />
+	
+	<node name="openni_tracker" pkg="openni_tracker" type="openni_tracker" />
+	
+	<node name="hokuyo_node" pkg="hokuyo_node" type="hokuyo_node" />
+	
+	<node pkg="rosbag" type="rosbag" name="rosbag_record_cam"
+       args="record -O /camera/depth/image /img_addr /head_cords /scan" />
+
+</launch>
+
