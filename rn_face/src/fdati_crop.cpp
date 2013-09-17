@@ -604,10 +604,10 @@ int main( int argc, char** argv )
 						{	//ROS_INFO("IN HDIMS LOOP");
 							val = cvRound( cvGetReal1D(face_sa[c].hist->bins,i)*face_sa[c].histimg->height/255 );
 							//ROS_INFO("CVSCALAR");
-							CvScalar color = hsv2rgb(i*180.f/face_sa[c].hdims);
+							///CvScalar color = hsv2rgb(i*180.f/face_sa[c].hdims);
 							//ROS_INFO("CVRECT");
-							cvRectangle( face_sa[c].histimg, cvPoint(i*face_sa[c].bin_w,face_sa[c].histimg->height),
-								cvPoint((i+1)*face_sa[c].bin_w,face_sa[c].histimg->height - val), color, -1, 8, 0 );
+							///cvRectangle( face_sa[c].histimg, cvPoint(i*face_sa[c].bin_w,face_sa[c].histimg->height),
+							///	cvPoint((i+1)*face_sa[c].bin_w,face_sa[c].histimg->height - val), color, -1, 8, 0 );
 						}
 					}
 					//ROS_INFO("cvCalcBackProject");
@@ -646,12 +646,12 @@ int main( int argc, char** argv )
 				if(face_sa[c].detected==1)
 				{
 					face_sa[c].new_center = face_sa[c].track_box.center;
-					face_sa[c].new_center.x = face_sa[c].box_area.x + face_sa[c].box_area.width/2;
-					face_sa[c].new_center.y = face_sa[c].box_area.y + face_sa[c].box_area.height/2;
+					face_sa[c].new_center.x = face_sa[c].box_area.x + face_sa[c].track_box.center.x/*face_sa[c].box_area.width/2*/;
+					face_sa[c].new_center.y = face_sa[c].box_area.y + face_sa[c].track_box.center.y/*face_sa[c].box_area.height/2*/;
 					//face_sa[c].new_center.y = face_sa[c].track_box.center.x + (640/NO_FACES)*c  ;
 					face_sa[c].tb2.center = face_sa[c].new_center;
-					face_sa[c].tb2.size.width = face_sa[c].track_box.size.width;
-					face_sa[c].tb2.size.height = face_sa[c].track_box.size.height;
+					face_sa[c].tb2.size.width = face_sa[c].track_box.size.width*0.90;
+					face_sa[c].tb2.size.height = face_sa[c].track_box.size.height*0.90;
 					face_sa[c].tb2.angle = face_sa[c].track_box.angle;
 					DTEMP=(face_sa[c].tb2.size.height*face_sa[c].tb2.size.width);
 					if (DTEMP>DMAX)
@@ -664,7 +664,8 @@ int main( int argc, char** argv )
 					{	
 						if(flashing==1)
 						{	ROS_INFO("POINT #1");
-							cvEllipseBox( iplImg /*face_sa[c].image*/, face_sa[c].tb2, 
+							cvEllipseBox(face_sa[c].image,face_sa[c].track_box,
+							//cvEllipseBox( iplImg /*face_sa[c].image*/, face_sa[c].tb2, 
 							//cvCircle(iplImg,cvPointFrom32f(face_sa[c].tb2.center),
 							//static_cast<int>(sqrt((pow(2,face_sa[c].tb2.size.width/2)) +
 							//(pow(2,face_sa[c].tb2.size.height/2)))+0.5),
@@ -679,13 +680,18 @@ int main( int argc, char** argv )
 					}
 					else
 					{	ROS_INFO("POINT #2");
-						cvEllipseBox(iplImg,face_sa[c].tb2,
+						cvEllipseBox(face_sa[c].image,face_sa[c].track_box,
+						//cvEllipseBox(iplImg,face_sa[c].tb2,
 						//cvCircle(iplImg,cvPointFrom32f(face_sa[c].tb2.center),
 						//	static_cast<int>(sqrt((pow(2,face_sa[c].tb2.size.width/2)) +
 						//	(pow(2,face_sa[c].tb2.size.height/2)))+0.5),
 						CV_RGB(rgb_map_.rgb_ar[Faces[c].fid-1][0],rgb_map_.rgb_ar[Faces[c].fid-1][1],
 							rgb_map_.rgb_ar[Faces[c].fid-1][2]), 3, CV_AA, 0 );
 					}
+					sprintf(head,"Face_%d",c+1);
+					cvShowImage(head,face_sa[c].image);
+					strcpy(head,"Face_");
+					cvWaitKey(1);
 				}
 			}
 			//ros::Duration(10).sleep();
