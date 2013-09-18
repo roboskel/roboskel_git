@@ -285,7 +285,7 @@ int main( int argc, char** argv )
 	}
 	//printf("Persons Tracked : %d\n",SESSION_MAX);
 	//ROS
-	ros::init(argc, argv, "recorder");
+	ros::init(argc, argv, "fdati_palio");
     ros::NodeHandle n;
 	ros::Publisher dom_id;
 	ros::Subscriber no_faces,im_adr,speaker_id,kinect_co;
@@ -300,6 +300,7 @@ int main( int argc, char** argv )
 	Mat frame, frameCopy;
 	CvFont font;
 	cvNamedWindow("Face Detection & Tracking",1);
+	cvMoveWindow("Face Detection & Tracking",650,0);
 	cvInitFont(&font,CV_FONT_HERSHEY_PLAIN|CV_FONT_ITALIC,1,2,2,2);
 	
 	const String scaleOpt = "--scale=";
@@ -333,7 +334,6 @@ int main( int argc, char** argv )
 		//ROS_INFO("DETECTED : %d" ,detected);
 		//ROS_INFO("IN LOOP");
 		ros::spinOnce();
-		cvNamedWindow("Face Detection & Tracking",1);
 		if(ADDR_SET==1)
 		{
 			
@@ -394,11 +394,11 @@ int main( int argc, char** argv )
 		{
 			
 			//ROS_INFO("ENTERED HIST LOOP");
-			sprintf(hist_str,"Histogram_%d",c+1);
+			//sprintf(hist_str,"Histogram_%d",c+1);
 			//text += boost::lexical_cast<std::string>(c+1);
-			cvNamedWindow(hist_str,1);
-			cvMoveWindow (hist_str,(350*c),600);
-			strcpy(hist_str,"Histogram");
+			//cvNamedWindow(hist_str,1);
+			//cvMoveWindow (hist_str,(350*c),600);
+			//strcpy(hist_str,"Histogram");
 			//ROS_INFO("LEFT HIST LOOP");
 			
 		}
@@ -495,7 +495,7 @@ int main( int argc, char** argv )
 					cvShowImage("Face Detection & Tracking",face_sa[0].image);
 					for (c=0;c<NO_FACES;c++)
 					{
-						printf("Face_%d-------------\n%d %d %d %d\n\n",c,Faces[c].fid,Faces[c].x,Faces[c].y,Faces[c].r);
+						//printf("Face_%d-------------\n%d %d %d %d\n\n",c,Faces[c].fid,Faces[c].x,Faces[c].y,Faces[c].r);
 					}
 				}
 			}
@@ -566,7 +566,7 @@ int main( int argc, char** argv )
 					//ROS_INFO("AFTER TRC");
 					//ROS_INFO("FACE_SA[%d].TRACK_WINDON : X = %d   Y = %d WIDTH = %d HEIGHT = %d",c,face_sa[c].track_window.x, 
 						//face_sa[c].track_window.y, face_sa[c].track_window.width, face_sa[c].track_window.height);
-					ros::Duration(20).sleep();
+					//ros::Duration(20).sleep();
 					
 					if( face_sa[c].backproject_mode )
 					{
@@ -740,33 +740,33 @@ int main( int argc, char** argv )
 						CV_RGB(rgb_map_.rgb_ar[Faces[c].fid-1][0],rgb_map_.rgb_ar[Faces[c].fid-1][1],rgb_map_.rgb_ar[Faces[c].fid-1][2]), 3, CV_AA, 0 );
 					}
 					//sscanf(line, "%s %s %s %s %s", &face_sa[c].number, &face_sa[c].id, &face_sa[c].x, &face_sa[c].y, &face_sa[c].z);
-					printf("%s \t %s -->\t %s \t %s \t %s \n", face_sa[c].number, face_sa[c].id, face_sa[c].x, face_sa[c].y, face_sa[c].z);
+					//printf("%s \t %s -->\t %s \t %s \t %s \n", face_sa[c].number, face_sa[c].id, face_sa[c].x, face_sa[c].y, face_sa[c].z);
 			
-			printf("\nhead_stick %d = %g",c,face_sa[c].head_stick);
-			printf("\n0_face_id=%d\n",Faces[c].fid/*face_sa[c].id_*/);
-			sprintf(string_faces, "face_%d", Faces[c].fid/*face_sa[c].id_*/ );
+			//printf("\nhead_stick %d = %g",c,face_sa[c].head_stick);
+			//printf("\n0_face_id=%d\n",Faces[c].fid/*face_sa[c].id_*/);
+			//sprintf(string_faces, "face_%d", Faces[c].fid/*face_sa[c].id_*/ );
 			//ROS_INFO("%d %d %d",face_sa[c].track_window.x,face_sa[c].track_window.y);
-			cvPutText(face_sa[0].image,string_faces,cvPoint(face_sa[c].track_window.x+50,face_sa[c].track_window.y+50),&font, CV_RGB(255,0,0));
-			printf("\ntrack_box.center.y = %f\n",face_sa[c].track_box.center.y);
+			//cvPutText(face_sa[0].image,string_faces,cvPoint(face_sa[c].track_window.x+50,face_sa[c].track_window.y+50),&font, CV_RGB(255,0,0));
+			//printf("\ntrack_box.center.y = %f\n",face_sa[c].track_box.center.y);
 			//--------- print coordinates of the Kinect stick models ----------
-			/*%s*/sprintf(text, "face_%d = %s m", Faces[c].fid/*face_sa[c].id*/, face_sa[c].y);
-			cvPutText(face_sa[0].image,text,cvPoint(10,430+(20*c)),&font, CV_RGB(255,255,100));
+			//sprintf(text, "face_%d = %s m", Faces[c].fid/*face_sa[c].id*/, face_sa[c].y);
+			//cvPutText(face_sa[0].image,text,cvPoint(10,430+(20*c)),&font, CV_RGB(255,255,100));
 			}
 			//ros::Duration(10).sleep();
-			cvLine (face_sa[0].image,  (cvPoint(0,400)),(cvPoint(600,400)), CV_RGB(255,0,255), 3, 1, 0);
+			//cvLine (face_sa[0].image,  (cvPoint(0,400)),(cvPoint(600,400)), CV_RGB(255,0,255), 3, 1, 0);
 					
-			cvLine (face_sa[0].image,  (cvPoint(290,390)),(cvPoint(290,410)), CV_RGB(255,0,255), 3, 1, 0);
+			//cvLine (face_sa[0].image,  (cvPoint(290,390)),(cvPoint(290,410)), CV_RGB(255,0,255), 3, 1, 0);
 					
-			cvPutText(face_sa[0].image,"0",cvPoint(283,376),&font, CV_RGB(255,0,255));
+			//cvPutText(face_sa[0].image,"0",cvPoint(283,376),&font, CV_RGB(255,0,255));
 
 			//{
 						for(c=0;c<NO_FACES;c++)
 						{	
-							sprintf(hist_str2,"Histogram_%d",c+1);
+							//sprintf(hist_str2,"Histogram_%d",c+1);
 							cvShowImage( "Face Detection & Tracking", face_sa[0].image );
-							cvShowImage( hist_str2, face_sa[c].histimg );
-							cvMoveWindow (hist_str2,(350*c),600);
-							strcpy(hist_str2,"Histogram");
+							//cvShowImage( hist_str2, face_sa[c].histimg );
+							//cvMoveWindow (hist_str2,(350*c),600);
+							//strcpy(hist_str2,"Histogram");
 						}
 					//}
 					
@@ -802,7 +802,7 @@ int main( int argc, char** argv )
 	}
 	//ROS_INFO("STILL INSIDE LOOP");
 	}
-	ROS_INFO("WUT");    
+	//ROS_INFO("WUT");    
 	dom_id_msg.data=4/*DOMINANT_ID*/;
 	dom_id.publish(dom_id_msg);
     cvDestroyWindow("Face Detection & Tracking");
@@ -863,8 +863,8 @@ face* detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& ne
         */
 		//ros::Duration(5).sleep();
 		//snprintf(string_faces, sizeof(string_faces), "face_%d", i);
-		snprintf(string_faces, sizeof(string_faces), "face_%d", i+1);
-		putText(img, string_faces, center, FONT_HERSHEY_COMPLEX_SMALL, 0.8, color, 1, CV_AA);
+		//snprintf(string_faces, sizeof(string_faces), "face_%d", i+1);
+		//putText(img, string_faces, center, FONT_HERSHEY_COMPLEX_SMALL, 0.8, color, 1, CV_AA);
 		
 		if((i>=0)/*&&(Faces[i].x==0)&&(Faces[i].y==0)*/)
 		{
@@ -886,12 +886,12 @@ face* detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& ne
 		//i++;
 	//if(done==NO_FACES){
 	cvWaitKey(100);
-			cv::imshow( "Face Detection & Tracking", img );
+			//cv::imshow( "Face Detection & Tracking", img );
 			//sleep(2);
 			detected = 1;
 			occlusion = 1;
 	//printf("Faces = %d\n",i);
-    //cv::imshow( "Face Detection & Tracking", img );
+    cv::imshow( "Face Detection & Tracking", img );
 //}
 	return /*;*/Faces;
 
