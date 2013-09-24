@@ -245,17 +245,19 @@ void box_area(double x,double y, double z,int &py, int &pz, int &width, int &hei
 }
 IplImage* crop( IplImage* src,  CvRect roi)
 {
+	cvSetImageROI( src, roi );
 	// Must have dimensions of output image
-	IplImage* cropped = cvCreateImage( cvSize(roi.width,roi.height), 8, 3 );
+	IplImage* cropped = cvCreateImage( cvGetSize(src)/*roi.width,roi.height*/, 8, 3 );
 	//cropped->origin=src->origin;
 	// Say what the source region is
-	cvSetImageROI( src, roi );
+	//cvSetImageROI( src, roi );
 	// Do the copy
-	//ROS_INFO("COPYING");
+	ROS_INFO("COPYING");
 	cvCopy( src, cropped );
 	//ROS_INFO("COPIED");
 	cvResetImageROI( src );
-	 return cropped;
+	//ROS_INFO("RETURNED");
+	return cropped;
 }
 
 void set_factors(double factors[])
@@ -458,7 +460,7 @@ int main( int argc, char** argv )
 						//	,face_sa[c].box_area.width,face_sa[c].box_area.height);
 						//ros::Duration(100).sleep();
 						face_sa[c].image=crop(iplImg,/*cvRect((640/NO_FACES)*c,0,640/NO_FACES,cut_height)*/face_sa[c].box_area);
-						//ROS_INFO("#2");
+						ROS_INFO("#2");
 						face_sa[c].frame = face_sa[c].image;
 						if( face_sa[c].frame.empty() )
 							return 0;
@@ -469,24 +471,25 @@ int main( int argc, char** argv )
 							flip( face_sa[c].frame, face_sa[c].frameCopy, 0 );
 						}
 						face_sa[c].image->origin=iplImg->origin;
-						//ROS_INFO("#3");
+						ROS_INFO("#3");
 						face_sa[c].hsv=cvCreateImage( cvGetSize(face_sa[c].image), 8, 3 );
-						//ROS_INFO("#4");
+						ROS_INFO("#4");
 						face_sa[c].hue=cvCreateImage( cvGetSize(face_sa[c].image), 8, 1 );
-						//ROS_INFO("#5");
+						ROS_INFO("#5");
 						face_sa[c].mask=cvCreateImage( cvGetSize(face_sa[c].image), 8, 1 );
-						//ROS_INFO("#6");
+						ROS_INFO("#6");
 						face_sa[c].backproject=cvCreateImage( cvGetSize(face_sa[c].image), 8, 1);
-						//ROS_INFO("#7");
+						ROS_INFO("#7");
 						face_sa[c].hist=cvCreateHist(1 , &face_sa[c].hdims, CV_HIST_ARRAY, &face_sa[c].hranges, 1);//Creates a histogram.
-						//ROS_INFO("#8" );
+						ROS_INFO("#8" );
 						face_sa[c].histimg = cvCreateImage( cvSize(320,200), 8, 3 ); //Creates an image header and allocates the image data. //CvSize size, int depth, int channels)
-						//ROS_INFO("#9");
+						ROS_INFO("#9");
 						cvZero( face_sa[c].histimg );
-						//ROS_INFO("#10");
+						ROS_INFO("#10");
 						cvCvtColor(face_sa[c].image, face_sa[c].hsv, CV_BGR2HSV );
 						if(face_sa[c].image_created == TRUE)
 						{
+							ROS_INFO("#11");
 							sprintf(head,"Face_%d",c+1);
 							cvShowImage(head,face_sa[c].image);
 							strcpy(head,"Face_");
@@ -568,7 +571,7 @@ int main( int argc, char** argv )
 						//ROS_INFO("IN TRACK LOOP");
 						//face_sa[c].max_val = 0.f;
 						_max_val[c] = 0.f;
-						//ROS_INFO("SET IMAGE ROI");
+						ROS_INFO("SET IMAGE ROI");
 						cvSetImageROI( face_sa[c].hue, face_sa[c].selection );
 						cvSetImageROI( face_sa[c].mask, face_sa[c].selection );
 						//printf("%d ")
@@ -582,7 +585,7 @@ int main( int argc, char** argv )
 						//ROS_INFO("RESET IMAGE ROI");
 						cvResetImageROI( face_sa[c].hue );
 						cvResetImageROI( face_sa[c].mask );
-						//ROS_INFO("MOVING IMAGE");
+						ROS_INFO("MOVING IMAGE");
 						//MOVE SELECTION BOX TO ORIGINAL IMAGE
 						//(640/NO_FACES)*c,0,640/NO_FACES,cut_height));
 						//ROS_INFO("C = %d",c);
@@ -758,6 +761,7 @@ face* detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& ne
 	//|CV_HAAR_DO_ROUGH_SEARCH
 	cascade.detectMultiScale( smallImg, faces,1.02, 2, 0|CV_HAAR_SCALE_IMAGE,Size(30, 30) );
 	t = (double)cvGetTickCount() - t;
+	ROS_INFO("IN D&D");
     for( vector<Rect>::const_iterator r = faces.begin(); r != faces.end(); r++,i++/*, i++*/ )
     {
         Mat smallImgROI;
