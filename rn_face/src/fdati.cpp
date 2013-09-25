@@ -285,7 +285,7 @@ int main( int argc, char** argv )
 	}
 	//printf("Persons Tracked : %d\n",SESSION_MAX);
 	//ROS
-	ros::init(argc, argv, "fdati_palio");
+	ros::init(argc, argv, "fdati");
     ros::NodeHandle n;
 	ros::Publisher dom_id;
 	ros::Subscriber no_faces,im_adr,speaker_id,kinect_co;
