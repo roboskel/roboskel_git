@@ -31,6 +31,7 @@ int ESD = 0 ; //emergency shutdown signal
 int MODE = 0 ;
 int REC = 0 ;
 int REMOTE = -1;
+int HOK = -1;
 string response = "";
 RoboteqDevice device;
 int status = -1;
@@ -65,7 +66,7 @@ void chatterCallback(const sensor_msgs::Joy::ConstPtr& msg)
 		{
 			ROS_INFO("Starting Face Recognition & Tracking, Press Start to Begin");
 			system("/home/skel/stop");
-			system("roslaunch rn_face rec_launch.launch &");
+			system("roslaunch rn_face live2.launch &");
 		}
 		else if(msg->buttons[1]==1)//CIRCLE
 		{
@@ -87,8 +88,8 @@ void chatterCallback(const sensor_msgs::Joy::ConstPtr& msg)
 		}
 		else if(msg->buttons[4]==1)//LEFT TRIGGER 
 		{
-			ROS_INFO("Shutting Down Openni_Launch");
-			system("rosbag play /home/skel/.ros/rec_bag.bag");
+		//	ROS_INFO("Playing Rosbag");
+			ros::shutdown();
 		}
 		
 		else if(msg->buttons[6]==1)//LEFT BUMPER
@@ -102,34 +103,45 @@ void chatterCallback(const sensor_msgs::Joy::ConstPtr& msg)
 		{
 			ROS_INFO("Deleting Recorded Images");
 			system("rm /home/skel/.ros/image*");
+			system("rm /home/skel/.ros/_laser.data");
 			system("rm /home/skel/.ros/rec_bag.bag");
 		}
 		else if(msg->axes[5]==1)//Left Button
 		{	
 			ROS_INFO("*********");
-			ROS_INFO("Left Button");
 			ROS_INFO("*********");
 		}
 		else if(msg->axes[5]==-1)
 		{
 			ROS_INFO("*********");//Right Button
-			ROS_INFO("Right Button");
 			ROS_INFO("*********");
 		}
 		else if(msg->axes[6]==1)
 		{
 			ROS_INFO("*********");//Up Button
-			ROS_INFO("Up Button");
+			ROS_INFO("Stoppping Face Detection And Tracking");
+			system("rosnode kill openni_tracker");
+			system("rosnode kill fdati");
+			system("rosnode kill fdc2");
 			ROS_INFO("*********");
 		}
 		else if(msg->axes[6]==-1)
 		{
-		ROS_INFO("*********");//Down Button
-		ROS_INFO("Down Button");
-		ROS_INFO("*********");
+			if(HOK == -1 )
+			{
+				ROS_INFO("*********");//Down Button
+				system("rosrun hokuyo_node hokuyo_node &");
+				ROS_INFO("*********");
+				HOK = 1;
+			}
+			else
+			{	
+				HOK=-1;
+				system("rosnode kill /hokuyo_node &");
+			}
+		}
 	}
-	}
-	else if ((REMOTE == 1) && (msg->buttons[6]==1))
+	else if ((REMOTE == 1) && (msg->buttons[6]==1))//LEFT BUMPER
 	{
 		ROS_INFO("Stopping Remote Control Node");
 		REMOTE = -1;
@@ -152,26 +164,10 @@ void chatterCallback(const sensor_msgs::Joy::ConstPtr& msg)
 
 int main(int argc, char* argv[])
 {	
-	/*
-	int status = device.Connect("/dev/ttyACM1");
-	if(status != RQ_SUCCESS)
-	{
-		cout<<"Error connecting to device: "<<status<<"."<<endl;
-		return 1;
-	}
-	//device.SetConfig(_RWD, 1, 1000);
-	//device.SetConfig(_RWD, 2, 1000);
-	device.SetConfig(_RWD, 1, -1);
-	device.SetConfig(_RWD, 2, -1);
-	*/
-	
 	ros::init(argc, argv, "controller");
 	ros::NodeHandle nh;
 	ros::Rate loop_rate(1000);
 	ros::Subscriber gp_in =nh.subscribe("joy", 1, chatterCallback);
-	//printf( "Transmitting Gamepad Output\n");
-	//ros::Publisher teleop_pub = nh.advertise<teleop_skel::teleop_skel>("skel_teleop", 1);
-	//ros::Publisher teleop_pub = nh.advertise<std_msgs::Float64MultiArray>("g", 1);
 	/*
 	ROS_INFO("Waiting For Input");
 	ROS_INFO("Face Tracking Options");
@@ -183,25 +179,6 @@ int main(int argc, char* argv[])
 	ROS_INFO("Square : Shut Down Openni_Launch");
 	ROS_INFO("Right Bumper (R1) : Delete Recorded Images");
 	ROS_INFO("Right Trigger (R2) : Shut Down Remote Control Node");
-	
-	
-	ROS_INFO("- SetConfig(_DINA, 1, 1)...");
-    if((status = device.SetConfig(_DINA, 1, 1)) != RQ_SUCCESS)
-      cout<<"failed --> "<<status<<endl;
-    else
-      ROS_INFO("succeeded.");
-    ros::Duration(0.01).sleep(); //sleep for 10 ms
-
-    int result;
-    
-    ROS_INFO("- GetConfig(_DINA, 1)...");
-    if((status = device.GetConfig(_DINA, 1, result)) != RQ_SUCCESS)
-      cout<<"failed --> "<<status<<endl;
-    else
-      cout<<"returned --> "<<result<<endl;
-    ROS_INFO("Roboteq -- Successfull setup of the Roboteq SDC2130");
-    printf ("Sek Operational\n\n");
-    ros::Duration(0.01).sleep(); //sleep for 10 ms
 	*/
 	while (ros::ok())
 		{

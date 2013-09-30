@@ -132,16 +132,11 @@ struct face_{
 	float hranges_arr[2];// = {0,500};
 	float* hranges ;//= hranges_arr;
 	float max_val;
-	//double head_stick[2];
-	//double head_stick_before_occlusion[2];
 	double head_stick;
 	double head_stick_before_occlusion;
 	double x,y,z;
 	double x_prev,y_prev,z_prev;
 	bool image_created;
-	//toy alex dhlwnontan sth main
-	//pleon melos tis domhs
-	//char number[10],id[2],x[10],y[10],z[10];
 	CvPoint origin;
 	CvRect selection;
 	CvRect track_window;
@@ -215,9 +210,6 @@ void box_area(double x,double y, double z,int &py, int &pz, int &width, int &hei
 	}
 	width = WIDTH;
 	height = HEIGHT;
-	//printf("TempY = %f\nTempZ = %f\n",tempy,tempz);
-	//printf("SkelY = %f\nSkelZ = %f\n",y,z);
-	//printf("X = %d\nY = %d\nW = %d\nH = %d\n\n",py,pz,width,height);
 	return ;
 }
 IplImage* crop( IplImage* src,  CvRect roi)
@@ -225,10 +217,7 @@ IplImage* crop( IplImage* src,  CvRect roi)
 	cvSetImageROI( src, roi );
 	// Must have dimensions of output image
 	IplImage* cropped = cvCreateImage( cvGetSize(src)/*roi.width,roi.height*/, 8, 3 );
-	//cropped->origin=src->origin;
-	// Say what the source region is
-	//cvSetImageROI( src, roi );
-	// Do the copy
+	// Say what the source region is	// Do the copy
 	//ROS_INFO("COPYING");
 	cvCopy( src, cropped );
 	//ROS_INFO("COPIED");
@@ -237,13 +226,7 @@ IplImage* crop( IplImage* src,  CvRect roi)
 	return cropped;
 }
 
-void set_factors(double factors[])
-{	
-	//calculate y factor
-	factors[0] = 320/(DISTANCE*(sin(28.5*PI/180))/sin(61.5*PI/180));
-	//calculate z factor
-	factors[1] = 240/(DISTANCE*(sin(21.5*PI/180))/sin(68.5*PI/180));
-}
+
 void no_faces_cb(const std_msgs::Int64::ConstPtr& msg)
 {
 	//ROS_INFO("SET NO_FACES");
@@ -260,12 +243,7 @@ void skelCallback(const rn_face::head_cords_m_array::ConstPtr& msg,struct face_ 
 {	
 	//ROS_INFO("READING STICK DATA");
 	NO_FACES = msg->no_faces;
-	//if (NO_FACES != PREV_NO_FACES)
-	//{
-	//	PREV_NO_FACES = NO_FACES ;
-		//detected=0;
-		//ros::Duration(0.5).sleep();
-	//}
+
 	if (NO_FACES > MAX_PERSONS)
 	{
 		MAX_PERSONS = NO_FACES;
@@ -275,10 +253,7 @@ void skelCallback(const rn_face::head_cords_m_array::ConstPtr& msg,struct face_ 
 		const rn_face::head_cords_m &data = msg->head_co[i];
 		if (face_sa[i].x==0)
 		{
-			//if(face_sa[i].x_prev!= 0)
-			//{
-				face_sa[i].detected = 0;  
-			//}
+			face_sa[i].detected = 0;
 		}
 		face_sa[i].x_prev = face_sa[i].x;
 		face_sa[i].y_prev = face_sa[i].y;
@@ -329,8 +304,6 @@ int main( int argc, char** argv )
 	int val;
 	const char *str_ ;
 	char head[20] ="Face_";
-	//set_factors(factors);
-	//ROS_INFO("FACTORS[0] = %f\nFACTORS[1] = %f \n",factors[0],factors[1]);
 	face_  *face_sa = new face_[6];
 	for (c=0;c<NO_FACES;c++)
 	{
@@ -347,17 +320,12 @@ int main( int argc, char** argv )
 	kinect_co = n.subscribe<rn_face::head_cords_m_array>("head_cords",1,boost::bind(skelCallback, _1, face_sa));
 	im_adr = n.subscribe<std_msgs::String>("img_addr", 1, mcb);
 	std_msgs::Int32 dom_id_msg;
-	//ros::Duration(100).sleep();
 	//ROS
 	//OPENCV.Mat frame, frameCopy;
 	Mat frame, frameCopy;
 	CvFont font;
 	cvNamedWindow("Enhanced Face Detection & Tracking",1);
 	cvMoveWindow("Enhanced Face Detection & Tracking",0,0);
-	//cvNamedWindow("Face 1",1);
-	//cvMoveWindow("Face 1",0,530);
-	//cvNamedWindow("Face 2",1);
-	//cvMoveWindow("Face 2",350,530);
 	cvInitFont(&font,CV_FONT_HERSHEY_PLAIN|CV_FONT_ITALIC,1,2,2,2);
 	
 	const String scaleOpt = "--scale=";
@@ -406,7 +374,6 @@ int main( int argc, char** argv )
 							{flip( frame, frameCopy, 0 );}
 							//ROS_INFO("SHOWING");
 					cvShowImage("Enhanced Face Detection & Tracking",iplImg);
-					//cvReleaseImage(&img);
 					cvWaitKey(10);
 				}
 
@@ -421,7 +388,6 @@ int main( int argc, char** argv )
 			{
 				//ROS_INFO("CREATED IPL IMG");	
 				//ROS_INFO("INITILIAZING HUES ETC");
-				//for(c=0;c<NO_FACES;c++)
 				for(c=0;c<MAX_PERSONS;c++)
 				{	
 					//printf("\nC = %d\n",c);	
@@ -439,10 +405,7 @@ int main( int argc, char** argv )
 						box_area(face_sa[c].x, face_sa[c].y, face_sa[c].z,/*factors,*/
 								face_sa[c].box_area.x, face_sa[c].box_area.y,
 								face_sa[c].box_area.width, face_sa[c].box_area.height);
-						//printf("X = %d\nY = %d\nW = %d\n H = %d\n",face_sa[c].box_area.x,face_sa[c].box_area.y
-						//	,face_sa[c].box_area.width,face_sa[c].box_area.height);
-						//ros::Duration(100).sleep();
-						face_sa[c].image=crop(iplImg,/*cvRect((640/NO_FACES)*c,0,640/NO_FACES,cut_height)*/face_sa[c].box_area);
+						face_sa[c].image=crop(iplImg,face_sa[c].box_area);
 						//ROS_INFO("#2");
 						face_sa[c].frame = face_sa[c].image;
 						if( face_sa[c].frame.empty() )
@@ -533,13 +496,9 @@ int main( int argc, char** argv )
 				sum++;
 			}
 		}
-		
-		//ROS_INFO("GIATI DE MPAINEIS EDW MESA ?");
 		if (sum>0)
 		{  	
-			//sum=0;
 			//ROS_INFO("MPHKE");
-			//for (c=0;c<NO_FACES;c++)
 			for (c=0;c<MAX_PERSONS;c++)
 			{
 				if(face_sa[c].detected==1)
@@ -556,13 +515,10 @@ int main( int argc, char** argv )
 					if(face_sa[c].track_object<0)
 					{	
 						//ROS_INFO("IN TRACK LOOP");
-						//face_sa[c].max_val = 0.f;
 						_max_val[c] = 0.f;
 						//ROS_INFO("SET IMAGE ROI");
 						cvSetImageROI( face_sa[c].hue, face_sa[c].selection );
 						cvSetImageROI( face_sa[c].mask, face_sa[c].selection );
-						//printf("%d ")
-						//ros::Duration(5).sleep();
 						//ROS_INFO("CALC HIST");
 						cvCalcHist( &face_sa[c].hue, face_sa[c].hist, 0, face_sa[c].mask );
 						//ROS_INFO("GETMINMAX");
@@ -574,13 +530,10 @@ int main( int argc, char** argv )
 						cvResetImageROI( face_sa[c].mask );
 						//ROS_INFO("MOVING IMAGE");
 						//MOVE SELECTION BOX TO ORIGINAL IMAGE
-						//(640/NO_FACES)*c,0,640/NO_FACES,cut_height));
 						//ROS_INFO("C = %d",c);
-						//face_sa[c].selection = cvRect(Faces[c].x-Faces[c].r/*+(640/NO_FACES)*c*/,Faces[c].y-Faces[c].r, 
 						face_sa[c].track_window = face_sa[c].selection;
 						//ROS_INFO("track_window_%d-------------%d %d %d %d",c,face_sa[c].track_window.x, face_sa[c].track_window.y,
 						//face_sa[c].track_window.width, face_sa[c].track_window.height);
-						
 						face_sa[c].track_object = 1;
 						cvZero( face_sa[c].histimg );
 						face_sa[c].bin_w = face_sa[c].histimg->width / face_sa[c].hdims;
@@ -624,17 +577,14 @@ int main( int argc, char** argv )
 					//ROS_INFO("AFTER IFS");
 				}
 			}
-				
-			//ros::Duration(3).sleep();
 			//for(c=0;c<NO_FACES;c++)
 			for(c=0;c<MAX_PERSONS;c++)
 			{	
 				if((face_sa[c].detected==1)&&(face_sa[c].x!=0))
 				{
 					face_sa[c].new_center = face_sa[c].track_box.center;
-					face_sa[c].new_center.x = face_sa[c].box_area.x + face_sa[c].track_box.center.x/*face_sa[c].box_area.width/2*/;
-					face_sa[c].new_center.y = face_sa[c].box_area.y + face_sa[c].track_box.center.y/*face_sa[c].box_area.height/2*/;
-					//face_sa[c].new_center.y = face_sa[c].track_box.center.x + (640/NO_FACES)*c  ;
+					face_sa[c].new_center.x = face_sa[c].box_area.x + face_sa[c].track_box.center.x;
+					face_sa[c].new_center.y = face_sa[c].box_area.y + face_sa[c].track_box.center.y;
 					face_sa[c].tb2.center = face_sa[c].new_center;
 					face_sa[c].tb2.size.width = face_sa[c].track_box.size.width+5;
 					face_sa[c].tb2.size.height = face_sa[c].track_box.size.height+5;
@@ -651,11 +601,7 @@ int main( int argc, char** argv )
 						if(flashing==1)
 						{	
 							//ROS_INFO("POINT #1");
-							//cvEllipseBox(face_sa[c].image,face_sa[c].track_box,
-							cvEllipseBox( iplImg /*face_sa[c].image*/, face_sa[c].tb2, 
-							//cvCircle(iplImg,cvPointFrom32f(face_sa[c].tb2.center),
-							//static_cast<int>(sqrt((pow(2,face_sa[c].tb2.size.width/2)) +
-							//(pow(2,face_sa[c].tb2.size.height/2)))+0.5),
+							cvEllipseBox( iplImg , face_sa[c].tb2, ,
 							CV_RGB(rgb_map_.rgb_ar[Faces[c].fid-1][0],rgb_map_.rgb_ar[Faces[c].fid-1][1],
 									rgb_map_.rgb_ar[Faces[c].fid-1][2]), 3, CV_AA, 0 );
 							flashing=-flashing;
@@ -668,11 +614,7 @@ int main( int argc, char** argv )
 					else
 					{	
 						//ROS_INFO("POINT #2");
-						//cvEllipseBox(face_sa[c].image,face_sa[c].track_box,
 						cvEllipseBox(iplImg,face_sa[c].tb2,
-						//cvCircle(iplImg,cvPointFrom32f(face_sa[c].tb2.center),
-						//	static_cast<int>(sqrt((pow(2,face_sa[c].tb2.size.width/2)) +
-						//	(pow(2,face_sa[c].tb2.size.height/2)))+0.5),
 						CV_RGB(rgb_map_.rgb_ar[Faces[c].fid-1][0],rgb_map_.rgb_ar[Faces[c].fid-1][1],
 							rgb_map_.rgb_ar[Faces[c].fid-1][2]), 3, CV_AA, 0 );
 					}
@@ -681,22 +623,10 @@ int main( int argc, char** argv )
 					strcpy(head,"Face_");
 					cvWaitKey(1);
 				}
-				/*
-				else
-				{
-					if(face_sa[c].image_created == TRUE)
-					{
-						sprintf(head,"Face_%d",c+1);
-						cvDestroyWindow(head);
-						strcpy(head,"Face_");
-						cvWaitKey(10);
-						face_sa[c].image_created = FALSE;
-					}
-				}
-				*/
+/
 			}
 			//ros::Duration(10).sleep();
-			//cvCircle(iplImg,cvPoint(100,100),10,CV_RGB(rgb_map_.rgb_ar[Faces[c].fid-1][0],rgb_map_.rgb_ar[Faces[c].fid-1][1],rgb_map_.rgb_ar[Faces[c].fid-1][2]),1,8,0);
+			
 			cvShowImage( "Enhanced Face Detection & Tracking", iplImg);
 			cvWaitKey(1); // o xronos gia kathe frame
 			//------------------------ press a key -----------------------
@@ -784,15 +714,14 @@ face* detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& ne
 			Faces[person].x = center.x;
 			Faces[person].y = center.y;
 			Faces[person].r = radius;
-			//return Faces;
 			//ROS_INFO("-------------\n%d %d %d %d\n\n",Faces[i].fid,Faces[i].x,Faces[i].y,Faces[i].r);
 			
 		}
 	}
 
 	occlusion = 1;
-//}
-	return /*;*/Faces;
+
+	return Faces;
 
 }
 
